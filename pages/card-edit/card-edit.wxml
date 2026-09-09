@@ -1,0 +1,20 @@
+<view class="container">
+  <view class="add-form card">
+    <text class="form-title">新增卡片</text>
+    <input class="input" placeholder="正面（问题）" value="{{front}}" bindinput="onFrontInput" />
+    <input class="input" placeholder="背面（答案）" value="{{back}}" bindinput="onBackInput" />
+    <button class="btn" bindtap="onAddCard">添加卡片</button>
+  </view>
+
+  <view class="list-title text-muted">卡片列表（{{cards.length}}）</view>
+
+  <view class="card-item card" wx:for="{{cards}}" wx:key="id">
+    <view class="card-content">
+      <text class="card-front">{{item.front}}</text>
+      <text class="card-back text-muted">{{item.back}}</text>
+    </view>
+    <text class="del" data-id="{{item.id}}" bindtap="onDeleteCard">删除</text>
+  </view>
+
+  <view class="empty text-muted" wx:if="{{cards.length === 0}}">暂无卡片</view>
+</view>

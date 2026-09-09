@@ -1,0 +1,55 @@
+/**app.wxss - 全局样式**/
+page {
+  --primary: #2b6cb0;
+  --primary-dark: #234e7a;
+  --bg: #f5f6f8;
+  --card-bg: #ffffff;
+  --text: #1a202c;
+  --text-muted: #718096;
+  --border: #e2e8f0;
+  --success: #38a169;
+  --danger: #e53e3e;
+  --warning: #dd6b20;
+  background-color: var(--bg);
+  color: var(--text);
+  font-size: 28rpx;
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+.container {
+  padding: 24rpx;
+  box-sizing: border-box;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 88rpx;
+  border-radius: 16rpx;
+  background-color: var(--primary);
+  color: #fff;
+  font-size: 30rpx;
+  border: none;
+}
+
+.btn::after {
+  border: none;
+}
+
+.btn-outline {
+  background-color: transparent;
+  color: var(--primary);
+  border: 2rpx solid var(--primary);
+}
+
+.card {
+  background-color: var(--card-bg);
+  border-radius: 20rpx;
+  padding: 28rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
+}
+
+.text-muted {
+  color: var(--text-muted);
+}

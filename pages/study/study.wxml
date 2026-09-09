@@ -1,0 +1,31 @@
+<view class="container study">
+  <view class="progress text-muted">剩余 {{queue.length}} · 已复习 {{doneCount}}</view>
+
+  <block wx:if="{{current}}">
+    <view class="flashcard card" bindtap="onFlip">
+      <view class="face-label text-muted">正面</view>
+      <view class="face-text">{{current.front}}</view>
+
+      <block wx:if="{{showBack}}">
+        <view class="divider"></view>
+        <view class="face-label text-muted">背面</view>
+        <view class="face-text">{{current.back}}</view>
+      </block>
+      <view class="tap-hint text-muted" wx:else>点击卡片查看答案</view>
+    </view>
+
+    <view class="rate-bar" wx:if="{{showBack}}">
+      <button class="rate-btn again" data-q="0" bindtap="onRate">忘记</button>
+      <button class="rate-btn hard" data-q="1" bindtap="onRate">困难</button>
+      <button class="rate-btn good" data-q="2" bindtap="onRate">良好</button>
+      <button class="rate-btn easy" data-q="3" bindtap="onRate">简单</button>
+    </view>
+  </block>
+
+  <view class="finished" wx:elif="{{finished}}">
+    <text class="finished-emoji">🎉</text>
+    <text class="finished-text">本轮复习完成！</text>
+    <text class="text-muted">已复习 {{doneCount}} 张卡片</text>
+    <button class="btn" bindtap="onBack">返回牌组</button>
+  </view>
+</view>

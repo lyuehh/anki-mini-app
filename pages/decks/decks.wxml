@@ -1,0 +1,28 @@
+<view class="container">
+  <view class="header">
+    <text class="title">我的牌组</text>
+    <button class="btn btn-add" size="mini" bindtap="onAddDeck">+ 新建</button>
+  </view>
+
+  <block wx:if="{{decks.length > 0}}">
+    <view class="deck card" wx:for="{{decks}}" wx:key="id">
+      <view class="deck-info">
+        <text class="deck-name">{{item.name}}</text>
+        <view class="deck-meta">
+          <text class="text-muted">共 {{item.total}} 张</text>
+          <text class="due-badge" wx:if="{{item.due > 0}}">待复习 {{item.due}}</text>
+          <text class="text-muted" wx:else>已完成</text>
+        </view>
+      </view>
+      <view class="deck-actions">
+        <button class="btn btn-sm" size="mini" data-id="{{item.id}}" bindtap="onStudy">学习</button>
+        <button class="btn btn-sm btn-outline" size="mini" data-id="{{item.id}}" bindtap="onManage">管理</button>
+        <button class="btn btn-sm btn-danger" size="mini" data-id="{{item.id}}" bindtap="onDelete">删除</button>
+      </view>
+    </view>
+  </block>
+
+  <view class="empty" wx:else>
+    <text class="text-muted">还没有牌组，点击右上角新建一个吧</text>
+  </view>
+</view>
