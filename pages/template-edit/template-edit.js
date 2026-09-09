@@ -15,7 +15,9 @@ Page({
       { label: '1.5x', value: 1.5 },
       { label: '2x', value: 2 },
       { label: '2.5x', value: 2.5 },
-      { label: '3x', value: 3 }
+      { label: '3x', value: 3 },
+      { label: '4x', value: 4 },
+      { label: '5x', value: 5 }
     ],
     preview: { front: '', back: '' }
   },
@@ -134,7 +136,30 @@ Page({
       })
       return
     }
+
+    // 统计受影响的卡片：使用本模板、且保存了字段值可重新渲染的卡片
+    const affected = store.countTemplateCards(this.data.templateId)
+    if (affected > 0) {
+      wx.showModal({
+        title: '确认保存',
+        content: `保存后将用新模板重新渲染 ${affected} 张已有卡片的正反面，是否继续？`,
+        confirmText: '保存并刷新',
+        success: (res) => {
+          if (res.confirm) this.doSave(front, back, true)
+        }
+      })
+      return
+    }
+    this.doSave(front, back, false)
+  },
+
+  doSave(front, back, refresh) {
     store.updateTemplate(this.data.templateId, { front, back, scale: this.data.scale })
-    wx.showToast({ title: '已保存', icon: 'success' })
+    if (refresh) {
+      const n = store.refreshCardsByTemplate(this.data.templateId)
+      wx.showToast({ title: `已保存，刷新 ${n} 张卡片`, icon: 'none' })
+    } else {
+      wx.showToast({ title: '已保存', icon: 'success' })
+    }
   }
 })

@@ -1,7 +1,10 @@
 <view class="container">
   <view class="header">
     <text class="title">我的牌组</text>
-    <button class="btn btn-add" size="mini" bindtap="onAddDeck">+ 新建</button>
+    <view class="header-actions">
+      <button class="btn btn-add btn-import" size="mini" bindtap="onImportCsv">导入 CSV</button>
+      <button class="btn btn-add" size="mini" bindtap="onAddDeck">+ 新建</button>
+    </view>
   </view>
 
   <block wx:if="{{decks.length > 0}}">

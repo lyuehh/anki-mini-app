@@ -58,7 +58,7 @@ Page({
         wx.showToast({ title: '渲染结果为空，请检查模板', icon: 'none' })
         return
       }
-      store.addCard(this.data.deckId, front, back)
+      store.addCard(this.data.deckId, front, back, values)
       this.setData({ fieldValues: {} })
       this.refresh()
       return

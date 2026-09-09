@@ -31,6 +31,8 @@
   font-weight: 600;
   text-align: center;
   word-break: break-word;
+  /* 保留模板/字段内容中的换行与连续空白，否则多行内容会被折叠成一行 */
+  white-space: pre-wrap;
 }
 
 .divider {
