@@ -3,7 +3,9 @@
     "pages/index/index",
     "pages/decks/decks",
     "pages/study/study",
-    "pages/card-edit/card-edit"
+    "pages/card-edit/card-edit",
+    "pages/templates/templates",
+    "pages/template-edit/template-edit"
   ],
   "window": {
     "backgroundTextStyle": "dark",
@@ -21,6 +23,10 @@
       {
         "pagePath": "pages/decks/decks",
         "text": "牌组"
+      },
+      {
+        "pagePath": "pages/templates/templates",
+        "text": "模板"
       },
       {
         "pagePath": "pages/index/index",

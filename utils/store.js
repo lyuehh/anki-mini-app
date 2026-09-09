@@ -1,5 +1,6 @@
 // utils/store.js - 基于本地存储的数据层
 const KEY = 'anki_decks'
+const TPL_KEY = 'anki_templates'
 
 function _load() {
   try {
@@ -11,6 +12,18 @@ function _load() {
 
 function _save(decks) {
   wx.setStorageSync(KEY, decks)
+}
+
+function _loadTemplates() {
+  try {
+    return wx.getStorageSync(TPL_KEY) || []
+  } catch (e) {
+    return []
+  }
+}
+
+function _saveTemplates(templates) {
+  wx.setStorageSync(TPL_KEY, templates)
 }
 
 function genId() {
@@ -35,6 +48,21 @@ function init() {
       }
     ])
   }
+  const templates = _loadTemplates()
+  if (templates.length === 0) {
+    const now = Date.now()
+    _saveTemplates([
+      {
+        id: genId(),
+        name: '示例模板：单词卡',
+        createdAt: now,
+        fields: ['单词', '释义', '例句'],
+        front: '{{单词}}',
+        back: '{{释义}}\n\n例句：{{例句}}',
+        scale: 1
+      }
+    ])
+  }
 }
 
 function getDecks() {
@@ -45,9 +73,9 @@ function getDeck(deckId) {
   return _load().find(d => d.id === deckId) || null
 }
 
-function addDeck(name) {
+function addDeck(name, templateId) {
   const decks = _load()
-  const deck = { id: genId(), name, createdAt: Date.now(), cards: [] }
+  const deck = { id: genId(), name, templateId: templateId || '', createdAt: Date.now(), cards: [] }
   decks.push(deck)
   _save(decks)
   return deck
@@ -100,8 +128,72 @@ function deleteCard(deckId, cardId) {
   _save(decks)
 }
 
+// ===== 模板 =====
+
+function getTemplates() {
+  return _loadTemplates()
+}
+
+function getTemplate(templateId) {
+  return _loadTemplates().find(t => t.id === templateId) || null
+}
+
+function addTemplate(name) {
+  const templates = _loadTemplates()
+  const tpl = {
+    id: genId(),
+    name,
+    createdAt: Date.now(),
+    fields: [],
+    front: '',
+    back: '',
+    scale: 1  // 展示卡片时内容放大倍数（1 = 原始大小）
+  }
+  templates.push(tpl)
+  _saveTemplates(templates)
+  return tpl
+}
+
+function updateTemplate(templateId, patch) {
+  const templates = _loadTemplates()
+  const tpl = templates.find(t => t.id === templateId)
+  if (!tpl) return null
+  Object.assign(tpl, patch)
+  _saveTemplates(templates)
+  return tpl
+}
+
+function deleteTemplate(templateId) {
+  _saveTemplates(_loadTemplates().filter(t => t.id !== templateId))
+}
+
+// 给模板添加字段（纯文本字段名，去重）
+function addTemplateField(templateId, fieldName) {
+  const templates = _loadTemplates()
+  const tpl = templates.find(t => t.id === templateId)
+  if (!tpl) return null
+  const name = (fieldName || '').trim()
+  if (!name) return tpl
+  if (!tpl.fields) tpl.fields = []
+  if (tpl.fields.indexOf(name) === -1) tpl.fields.push(name)
+  _saveTemplates(templates)
+  return tpl
+}
+
+// 删除模板字段
+function deleteTemplateField(templateId, fieldName) {
+  const templates = _loadTemplates()
+  const tpl = templates.find(t => t.id === templateId)
+  if (!tpl) return null
+  tpl.fields = (tpl.fields || []).filter(f => f !== fieldName)
+  _saveTemplates(templates)
+  return tpl
+}
+
 module.exports = {
   init, genId,
   getDecks, getDeck, addDeck, updateDeck, deleteDeck,
-  addCard, updateCard, deleteCard
+  addCard, updateCard, deleteCard,
+  getTemplates, getTemplate, addTemplate, updateTemplate, deleteTemplate,
+  addTemplateField, deleteTemplateField
 }

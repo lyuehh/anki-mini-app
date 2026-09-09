@@ -9,7 +9,8 @@ Page({
     current: null,  // 当前卡片
     showBack: false,
     doneCount: 0,
-    finished: false
+    finished: false,
+    scale: 1        // 内容放大倍数（来自牌组绑定的模板）
   },
 
   onLoad(options) {
@@ -21,10 +22,12 @@ Page({
     }
     const now = Date.now()
     const queue = deck.cards.filter(c => srs.isDue(c, now))
+    const tpl = deck.templateId ? store.getTemplate(deck.templateId) : null
     this.setData({
       deckId,
       deckName: deck.name,
       queue,
+      scale: (tpl && tpl.scale) || 1,
       finished: queue.length === 0
     })
     wx.setNavigationBarTitle({ title: deck.name })

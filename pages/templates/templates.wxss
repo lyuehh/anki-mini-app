@@ -26,48 +26,28 @@
   border: none;
 }
 
-.deck {
+.tpl {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 20rpx;
 }
 
-.deck-info {
-  margin-bottom: 20rpx;
+.tpl-info {
+  flex: 1;
+  min-width: 0;
 }
 
-.deck-name {
+.tpl-name {
   font-size: 32rpx;
   font-weight: 600;
   display: block;
   margin-bottom: 10rpx;
 }
 
-.deck-meta {
-  display: flex;
-  align-items: center;
-  gap: 16rpx;
-  font-size: 24rpx;
-}
-
-.due-badge {
-  background-color: var(--warning);
-  color: #fff;
-  padding: 4rpx 16rpx;
-  border-radius: 20rpx;
-  font-size: 22rpx;
-}
-
-.deck-actions {
+.tpl-actions {
   display: flex;
   gap: 16rpx;
-  flex-wrap: wrap;
-}
-
-.tpl-badge {
-  background-color: var(--primary);
-  color: #fff;
-  padding: 4rpx 16rpx;
-  border-radius: 20rpx;
-  font-size: 22rpx;
 }
 
 .btn-sm {

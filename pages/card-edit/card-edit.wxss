@@ -18,6 +18,23 @@
   font-size: 28rpx;
 }
 
+.tpl-hint {
+  display: block;
+  font-size: 24rpx;
+  margin-bottom: 16rpx;
+}
+
+.field-row {
+  margin-bottom: 16rpx;
+}
+
+.field-label {
+  display: block;
+  font-size: 26rpx;
+  font-weight: 500;
+  margin-bottom: 8rpx;
+}
+
 .list-title {
   font-size: 26rpx;
   margin: 24rpx 8rpx 16rpx;

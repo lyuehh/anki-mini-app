@@ -1,8 +1,21 @@
 <view class="container">
   <view class="add-form card">
     <text class="form-title">新增卡片</text>
-    <input class="input" placeholder="正面（问题）" value="{{front}}" bindinput="onFrontInput" />
-    <input class="input" placeholder="背面（答案）" value="{{back}}" bindinput="onBackInput" />
+
+    <block wx:if="{{tpl}}">
+      <text class="tpl-hint text-muted">使用模板「{{tpl.name}}」，按字段填写</text>
+      <view class="field-row" wx:for="{{tpl.fields}}" wx:key="*this">
+        <text class="field-label">{{item}}</text>
+        <input class="input" placeholder="请输入{{item}}" value="{{fieldValues[item]}}" data-name="{{item}}" bindinput="onFieldInput" />
+      </view>
+      <view wx:if="{{tpl.fields.length === 0}}" class="text-muted tpl-hint">该模板还没有字段，请先到模板页添加字段</view>
+    </block>
+
+    <block wx:else>
+      <input class="input" placeholder="正面（问题）" value="{{front}}" bindinput="onFrontInput" />
+      <input class="input" placeholder="背面（答案）" value="{{back}}" bindinput="onBackInput" />
+    </block>
+
     <button class="btn" bindtap="onAddCard">添加卡片</button>
   </view>
 

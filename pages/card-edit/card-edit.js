@@ -1,4 +1,5 @@
 const store = require('../../utils/store.js')
+const template = require('../../utils/template.js')
 
 Page({
   data: {
@@ -6,7 +7,10 @@ Page({
     deckName: '',
     cards: [],
     front: '',
-    back: ''
+    back: '',
+    // 模板相关
+    tpl: null,          // 牌组绑定的模板（无则为 null）
+    fieldValues: {}     // 模板字段名 -> 输入值
   },
 
   onLoad(options) {
@@ -18,7 +22,8 @@ Page({
     const deck = store.getDeck(this.data.deckId)
     if (!deck) return
     wx.setNavigationBarTitle({ title: deck.name })
-    this.setData({ deckName: deck.name, cards: deck.cards })
+    const tpl = deck.templateId ? store.getTemplate(deck.templateId) : null
+    this.setData({ deckName: deck.name, cards: deck.cards, tpl })
   },
 
   onFrontInput(e) {
@@ -29,7 +34,36 @@ Page({
     this.setData({ back: e.detail.value })
   },
 
+  // 模板字段输入
+  onFieldInput(e) {
+    const name = e.currentTarget.dataset.name
+    const fieldValues = Object.assign({}, this.data.fieldValues)
+    fieldValues[name] = e.detail.value
+    this.setData({ fieldValues })
+  },
+
   onAddCard() {
+    const tpl = this.data.tpl
+    if (tpl) {
+      // 使用模板：按字段填写，渲染出正反面
+      const values = this.data.fieldValues
+      const filled = (tpl.fields || []).some(f => (values[f] || '').trim())
+      if (!filled) {
+        wx.showToast({ title: '请至少填写一个字段', icon: 'none' })
+        return
+      }
+      const front = template.render(tpl.front, values).trim()
+      const back = template.render(tpl.back, values).trim()
+      if (!front && !back) {
+        wx.showToast({ title: '渲染结果为空，请检查模板', icon: 'none' })
+        return
+      }
+      store.addCard(this.data.deckId, front, back)
+      this.setData({ fieldValues: {} })
+      this.refresh()
+      return
+    }
+
     const front = this.data.front.trim()
     const back = this.data.back.trim()
     if (!front || !back) {

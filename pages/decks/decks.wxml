@@ -13,10 +13,15 @@
           <text class="due-badge" wx:if="{{item.due > 0}}">待复习 {{item.due}}</text>
           <text class="text-muted" wx:else>已完成</text>
         </view>
+        <view class="deck-meta">
+          <text class="tpl-badge" wx:if="{{item.templateName}}">模板：{{item.templateName}}</text>
+          <text class="text-muted" wx:else>未指定模板</text>
+        </view>
       </view>
       <view class="deck-actions">
         <button class="btn btn-sm" size="mini" data-id="{{item.id}}" bindtap="onStudy">学习</button>
         <button class="btn btn-sm btn-outline" size="mini" data-id="{{item.id}}" bindtap="onManage">管理</button>
+        <button class="btn btn-sm btn-outline" size="mini" data-id="{{item.id}}" bindtap="onChangeTemplate">模板</button>
         <button class="btn btn-sm btn-danger" size="mini" data-id="{{item.id}}" bindtap="onDelete">删除</button>
       </view>
     </view>
