@@ -17,10 +17,13 @@ Page({
   },
 
   onLoad(options) {
-    i18n.attach(this)
     this.setData({ deckId: options.deckId })
-    this.refresh()
   },
+
+  onShow() {
+    i18n.attach(this)
+    this.refresh()
+  }
 
   refresh() {
     const deck = store.getDeck(this.data.deckId)
