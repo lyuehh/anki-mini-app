@@ -12,10 +12,11 @@
 .input {
   height: 80rpx;
   border: 2rpx solid var(--border);
-  border-radius: 12rpx;
-  padding: 0 20rpx;
+  border-radius: 14rpx;
+  padding: 0 22rpx;
   font-size: 28rpx;
   flex: 1;
+  background: #fafbff;
 }
 
 .add-field {
@@ -29,10 +30,15 @@
   line-height: 80rpx;
   padding: 0 32rpx;
   font-size: 28rpx;
-  border-radius: 12rpx;
-  background-color: var(--primary);
+  border-radius: 14rpx;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
   color: #fff;
   margin: 0;
+  box-shadow: 0 4rpx 12rpx rgba(79, 110, 247, 0.24);
+}
+
+.add-field .btn-sm::after {
+  border: none;
 }
 
 .chips {
@@ -45,7 +51,7 @@
 .chip {
   display: flex;
   align-items: center;
-  background-color: #ebf3fb;
+  background-color: var(--primary-soft);
   border: 2rpx solid var(--primary);
   border-radius: 30rpx;
   padding: 8rpx 12rpx 8rpx 20rpx;
@@ -87,7 +93,7 @@
 
 .scale-opt.active {
   border-color: var(--primary);
-  background-color: #ebf3fb;
+  background-color: var(--primary-soft);
   color: var(--primary);
   font-weight: 600;
 }
@@ -97,10 +103,11 @@
   box-sizing: border-box;
   min-height: 140rpx;
   border: 2rpx solid var(--border);
-  border-radius: 12rpx;
-  padding: 20rpx;
+  border-radius: 14rpx;
+  padding: 22rpx;
   font-size: 28rpx;
   line-height: 1.5;
+  background: #fafbff;
 }
 
 .preview-label {

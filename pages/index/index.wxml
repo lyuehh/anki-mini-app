@@ -1,23 +1,30 @@
 <view class="container">
-  <view class="hero">
-    <text class="hero-title">学习统计</text>
-    <text class="hero-sub text-muted">坚持复习，记得更牢</text>
+  <view class="hero card">
+    <view class="hero-text">
+      <text class="hero-title">学习统计</text>
+      <text class="hero-sub">坚持复习，记得更牢 ✨</text>
+    </view>
+    <text class="hero-emoji">📊</text>
   </view>
 
   <view class="stat-grid">
     <view class="stat card">
+      <view class="stat-icon icon-deck">🗂️</view>
       <text class="stat-num">{{deckCount}}</text>
       <text class="stat-label text-muted">牌组</text>
     </view>
     <view class="stat card">
+      <view class="stat-icon icon-card">🃏</view>
       <text class="stat-num">{{cardCount}}</text>
       <text class="stat-label text-muted">卡片总数</text>
     </view>
     <view class="stat card">
+      <view class="stat-icon icon-due">⏰</view>
       <text class="stat-num due">{{dueCount}}</text>
       <text class="stat-label text-muted">待复习</text>
     </view>
     <view class="stat card">
+      <view class="stat-icon icon-mastered">🏆</view>
       <text class="stat-num mastered">{{masteredCount}}</text>
       <text class="stat-label text-muted">已掌握</text>
     </view>

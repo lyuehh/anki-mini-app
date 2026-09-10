@@ -9,16 +9,16 @@
   ],
   "window": {
     "backgroundTextStyle": "dark",
-    "navigationBarBackgroundColor": "#2b6cb0",
+    "navigationBarBackgroundColor": "#4f6ef7",
     "navigationBarTitleText": "Anki",
     "navigationBarTextStyle": "white",
-    "backgroundColor": "#f5f6f8"
+    "backgroundColor": "#f2f4fb"
   },
   "tabBar": {
-    "color": "#8a8a8a",
-    "selectedColor": "#2b6cb0",
+    "color": "#8a90a6",
+    "selectedColor": "#4f6ef7",
     "backgroundColor": "#ffffff",
-    "borderStyle": "black",
+    "borderStyle": "white",
     "list": [
       {
         "pagePath": "pages/decks/decks",

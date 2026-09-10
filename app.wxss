@@ -1,23 +1,32 @@
 /**app.wxss - 全局样式**/
 page {
-  --primary: #2b6cb0;
-  --primary-dark: #234e7a;
-  --bg: #f5f6f8;
+  --primary: #4f6ef7;
+  --primary-dark: #3a55d9;
+  --primary-soft: #eef1ff;
+  --accent: #7c5cff;
+  --bg: #f2f4fb;
   --card-bg: #ffffff;
-  --text: #1a202c;
-  --text-muted: #718096;
-  --border: #e2e8f0;
-  --success: #38a169;
-  --danger: #e53e3e;
-  --warning: #dd6b20;
-  background-color: var(--bg);
+  --text: #1b2033;
+  --text-muted: #8a90a6;
+  --border: #e8ebf5;
+  --success: #2fb974;
+  --danger: #f2545b;
+  --warning: #f5a524;
+  --shadow: 0 8rpx 30rpx rgba(58, 71, 120, 0.08);
+  --shadow-soft: 0 4rpx 16rpx rgba(58, 71, 120, 0.06);
+  background:
+    radial-gradient(1200rpx 700rpx at 100% -10%, rgba(124, 92, 255, 0.10), transparent 60%),
+    radial-gradient(1000rpx 600rpx at -10% 0%, rgba(79, 110, 247, 0.12), transparent 55%),
+    var(--bg);
+  background-attachment: fixed;
   color: var(--text);
   font-size: 28rpx;
   font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, "PingFang SC", "Microsoft YaHei", sans-serif;
+  line-height: 1.5;
 }
 
 .container {
-  padding: 24rpx;
+  padding: 28rpx 24rpx calc(40rpx + env(safe-area-inset-bottom));
   box-sizing: border-box;
 }
 
@@ -26,11 +35,19 @@ page {
   align-items: center;
   justify-content: center;
   height: 88rpx;
-  border-radius: 16rpx;
-  background-color: var(--primary);
+  border-radius: 18rpx;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
   color: #fff;
   font-size: 30rpx;
+  font-weight: 500;
   border: none;
+  box-shadow: 0 10rpx 24rpx rgba(79, 110, 247, 0.28);
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.btn:active {
+  transform: translateY(2rpx) scale(0.99);
+  opacity: 0.92;
 }
 
 .btn::after {
@@ -38,16 +55,22 @@ page {
 }
 
 .btn-outline {
-  background-color: transparent;
+  background: #fff;
   color: var(--primary);
   border: 2rpx solid var(--primary);
+  box-shadow: none;
+}
+
+.btn-outline:active {
+  background: var(--primary-soft);
 }
 
 .card {
   background-color: var(--card-bg);
-  border-radius: 20rpx;
-  padding: 28rpx;
-  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
+  border-radius: 24rpx;
+  padding: 30rpx;
+  box-shadow: var(--shadow);
+  border: 2rpx solid rgba(255, 255, 255, 0.8);
 }
 
 .text-muted {

@@ -6,6 +6,7 @@
 
   <block wx:if="{{templates.length > 0}}">
     <view class="tpl card" wx:for="{{templates}}" wx:key="id">
+      <view class="tpl-icon">📝</view>
       <view class="tpl-info">
         <text class="tpl-name">{{item.name}}</text>
         <text class="text-muted">{{item.fieldCount}} 个字段</text>
