@@ -52,6 +52,109 @@
   gap: 16rpx;
 }
 
+/* ===== 手写练习 ===== */
+.write-toggle {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24rpx;
+}
+
+.write-toggle-btn {
+  min-width: 200rpx;
+}
+
+/* 手写工具用的小按钮（study 页面局部样式） */
+.btn-sm {
+  height: 60rpx;
+  line-height: 60rpx;
+  font-size: 24rpx;
+  border-radius: 12rpx;
+  background-color: var(--primary);
+  color: #fff;
+  margin: 0;
+}
+
+.btn-sm.btn-outline {
+  background-color: transparent;
+  color: var(--primary);
+  border: 2rpx solid var(--primary);
+}
+
+.btn-sm.btn-danger {
+  background-color: transparent;
+  color: var(--danger);
+  border: 2rpx solid var(--danger);
+}
+
+.write-pad {
+  margin-bottom: 32rpx;
+}
+
+.write-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16rpx;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.write-tools {
+  display: flex;
+  gap: 12rpx;
+}
+
+.write-tools .btn-sm {
+  margin: 0;
+  padding: 0 16rpx;
+}
+
+.write-canvas-wrap {
+  position: relative;
+  width: 100%;
+  height: 480rpx;
+  border: 2rpx dashed var(--border);
+  border-radius: 16rpx;
+  background:
+    linear-gradient(to right, transparent calc(50% - 1rpx), rgba(226, 232, 240, 0.8) calc(50% - 1rpx), rgba(226, 232, 240, 0.8) calc(50% + 1rpx), transparent calc(50% + 1rpx)),
+    linear-gradient(to bottom, transparent calc(50% - 1rpx), rgba(226, 232, 240, 0.8) calc(50% - 1rpx), rgba(226, 232, 240, 0.8) calc(50% + 1rpx), transparent calc(50% + 1rpx));
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.write-guide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(160, 174, 192, 0.45);
+  font-weight: 600;
+  text-align: center;
+  pointer-events: none;
+  white-space: pre-wrap;
+  word-break: break-word;
+  padding: 16rpx;
+  box-sizing: border-box;
+}
+
+.write-canvas {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.write-tip {
+  display: block;
+  margin-top: 16rpx;
+  font-size: 22rpx;
+  text-align: center;
+}
+
+
 .rate-btn {
   flex: 1;
   height: 96rpx;

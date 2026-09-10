@@ -14,6 +14,38 @@
       <view class="tap-hint text-muted" wx:else>点击卡片查看答案</view>
     </view>
 
+    <!-- 手写练习：练习书写汉字笔画顺序 -->
+    <view class="write-toggle">
+      <button class="btn btn-outline write-toggle-btn" size="mini" bindtap="onToggleWrite">
+        {{showWrite ? '收起手写' : '手写练习'}}
+      </button>
+    </view>
+
+    <view class="write-pad card" wx:if="{{showWrite}}">
+      <view class="write-head">
+        <text class="face-label text-muted">在下方书写练习（描红：{{writeSource === 'front' ? '正面' : '背面'}}）</text>
+        <view class="write-tools">
+          <button class="btn btn-sm btn-outline" size="mini" bindtap="onSwitchWriteSource">描{{writeSource === 'front' ? '背面' : '正面'}}</button>
+          <button class="btn btn-sm btn-outline" size="mini" bindtap="onToggleGuide">{{showGuide ? '隐描红' : '显描红'}}</button>
+          <button class="btn btn-sm btn-danger" size="mini" bindtap="onClearWrite">清除</button>
+        </view>
+      </view>
+      <view class="write-canvas-wrap">
+        <!-- 描红引导层：淡色显示待书写内容，方便临摹与练习笔画顺序 -->
+        <view class="write-guide face-text" wx:if="{{showGuide}}" style="font-size: {{writeGuideSize}}rpx">{{writeText}}</view>
+        <canvas
+          type="2d"
+          id="writeCanvas"
+          class="write-canvas"
+          disable-scroll="true"
+          bindtouchstart="onWriteStart"
+          bindtouchmove="onWriteMove"
+          bindtouchend="onWriteEnd"
+        ></canvas>
+      </view>
+      <text class="write-tip text-muted">用手指在方格内书写，边写边记忆笔画顺序</text>
+    </view>
+
     <view class="rate-bar" wx:if="{{showBack}}">
       <button class="rate-btn again" data-q="0" bindtap="onRate">忘记</button>
       <button class="rate-btn hard" data-q="1" bindtap="onRate">困难</button>

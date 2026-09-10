@@ -10,7 +10,13 @@ Page({
     showBack: false,
     doneCount: 0,
     finished: false,
-    scale: 1        // 内容放大倍数（来自牌组绑定的模板）
+    scale: 1,       // 内容放大倍数（来自牌组绑定的模板）
+    // 手写练习相关
+    showWrite: false,       // 是否展开手写面板
+    showGuide: true,        // 是否显示描红引导层
+    writeSource: 'front',   // 描红内容取正面还是背面
+    writeText: '',          // 当前描红文本
+    writeGuideSize: 160     // 描红字号（rpx）
   },
 
   onLoad(options) {
@@ -41,6 +47,9 @@ Page({
       return
     }
     this.setData({ current: queue[0], showBack: false })
+    // 换卡片时清空画布并同步描红文本
+    this.syncWriteText()
+    this.clearCanvas()
   },
 
   onFlip() {
@@ -69,5 +78,108 @@ Page({
 
   onBack() {
     wx.navigateBack()
+  },
+
+  // ===== 手写练习 =====
+
+  // 展开/收起手写面板；首次展开时初始化画布
+  onToggleWrite() {
+    const showWrite = !this.data.showWrite
+    this.setData({ showWrite })
+    if (showWrite) {
+      this.syncWriteText()
+      // 等待画布渲染后再初始化
+      wx.nextTick(() => this.initCanvas())
+    }
+  },
+
+  // 切换描红内容来源（正面/背面）
+  onSwitchWriteSource() {
+    const writeSource = this.data.writeSource === 'front' ? 'back' : 'front'
+    this.setData({ writeSource }, () => this.syncWriteText())
+  },
+
+  // 显示/隐藏描红引导层
+  onToggleGuide() {
+    this.setData({ showGuide: !this.data.showGuide })
+  },
+
+  // 根据当前卡片和来源更新描红文本
+  syncWriteText() {
+    const card = this.data.current
+    if (!card) {
+      this.setData({ writeText: '' })
+      return
+    }
+    const text = this.data.writeSource === 'back' ? (card.back || '') : (card.front || '')
+    this.setData({ writeText: text })
+  },
+
+  // 初始化 canvas 2d 上下文（含高清屏适配）
+  initCanvas() {
+    const query = wx.createSelectorQuery().in(this)
+    query.select('#writeCanvas')
+      .fields({ node: true, size: true })
+      .exec((res) => {
+        if (!res || !res[0] || !res[0].node) return
+        const canvas = res[0].node
+        const ctx = canvas.getContext('2d')
+        const dpr = wx.getSystemInfoSync().pixelRatio || 1
+        canvas.width = res[0].width * dpr
+        canvas.height = res[0].height * dpr
+        ctx.scale(dpr, dpr)
+        ctx.lineCap = 'round'
+        ctx.lineJoin = 'round'
+        ctx.lineWidth = 8
+        ctx.strokeStyle = '#1a202c'
+        this._canvas = canvas
+        this._ctx = ctx
+        this._cssWidth = res[0].width
+        this._cssHeight = res[0].height
+        this._drawing = false
+      })
+  },
+
+  // 触摸开始：起笔
+  onWriteStart(e) {
+    if (!this._ctx) return
+    const t = e.touches[0]
+    const p = this._toLocal(t)
+    this._drawing = true
+    this._ctx.beginPath()
+    this._ctx.moveTo(p.x, p.y)
+    // 单点也画出可见笔迹
+    this._ctx.lineTo(p.x + 0.1, p.y + 0.1)
+    this._ctx.stroke()
+  },
+
+  // 触摸移动：运笔
+  onWriteMove(e) {
+    if (!this._ctx || !this._drawing) return
+    const t = e.touches[0]
+    const p = this._toLocal(t)
+    this._ctx.lineTo(p.x, p.y)
+    this._ctx.stroke()
+  },
+
+  // 触摸结束：收笔
+  onWriteEnd() {
+    this._drawing = false
+  },
+
+  // 将触摸坐标转换为画布本地坐标
+  _toLocal(touch) {
+    return { x: touch.x, y: touch.y }
+  },
+
+  // 清除画布内容
+  onClearWrite() {
+    this.clearCanvas()
+  },
+
+  clearCanvas() {
+    if (this._ctx && this._cssWidth) {
+      this._ctx.clearRect(0, 0, this._cssWidth, this._cssHeight)
+    }
   }
 })
