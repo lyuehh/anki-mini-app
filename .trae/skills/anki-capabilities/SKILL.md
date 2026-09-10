@@ -23,7 +23,7 @@ Anki 是开源的间隔重复记忆软件：用「笔记（Note）+ 笔记类型
 | 富媒体（图片/音频/TTS） | ✅ | ❌ | 暂不支持媒体字段 |
 | 导入 | ✅ CSV/`.apkg`/`.colpkg` 等 | ⚠️ 仅 Anki 风格 CSV | `utils/csv.js`，支持 `#separator/#columns/#deck` 等配置项 |
 | 导出 | ✅ 多格式 | ❌ | 暂无导出 |
-| 数据存储/同步 | ✅ 本地 SQLite + AnkiWeb 云同步 | ⚠️ 本地 `wx.storage`，无同步 | 数据仅在本机 |
+| 数据存储/同步 | ✅ 本地 SQLite + AnkiWeb 云同步 | ⚠️ 本地 `wx.getStorageSync`/`wx.setStorageSync`，无同步 | 数据仅在本机 |
 | 统计 | ✅ 复习热图、留存率等详尽报表 | ⚠️ 概览统计 | 牌组数/卡片总数/待复习/已掌握 |
 | 学习界面 | ✅ 翻卡 + 四档评分 + 自定义 | ✅ 翻卡 + 四档评分 | 支持内容放大倍数 |
 | 插件/扩展生态 | ✅ | ❌ | 无 |
