@@ -1,33 +1,33 @@
 <view class="container study">
-  <view class="progress text-muted">剩余 {{queue.length}} · 已复习 {{doneCount}}</view>
+  <view class="progress text-muted">{{progressText}}</view>
 
   <block wx:if="{{current}}">
     <view class="flashcard card" bindtap="onFlip">
-      <view class="face-label text-muted">正面</view>
+      <view class="face-label text-muted">{{i18n.study.front}}</view>
       <view class="face-text" style="font-size: {{48 * scale}}rpx">{{current.front}}</view>
 
       <block wx:if="{{showBack}}">
         <view class="divider"></view>
-        <view class="face-label text-muted">背面</view>
+        <view class="face-label text-muted">{{i18n.study.back}}</view>
         <view class="face-text" style="font-size: {{48 * scale}}rpx">{{current.back}}</view>
       </block>
-      <view class="tap-hint text-muted" wx:else>点击卡片查看答案</view>
+      <view class="tap-hint text-muted" wx:else>{{i18n.study.tapHint}}</view>
     </view>
 
     <!-- 手写练习：练习书写汉字笔画顺序 -->
     <view class="write-toggle">
       <button class="btn btn-outline write-toggle-btn" size="mini" bindtap="onToggleWrite">
-        {{showWrite ? '收起手写' : '手写练习'}}
+        {{showWrite ? i18n.study.hideWrite : i18n.study.showWrite}}
       </button>
     </view>
 
     <view class="write-pad card" wx:if="{{showWrite}}">
       <view class="write-head">
-        <text class="face-label text-muted">在下方书写练习（描红：{{writeSource === 'front' ? '正面' : '背面'}}）</text>
+        <text class="face-label text-muted">{{writeHeadText}}</text>
         <view class="write-tools">
-          <button class="btn btn-sm btn-outline" size="mini" bindtap="onSwitchWriteSource">描{{writeSource === 'front' ? '背面' : '正面'}}</button>
-          <button class="btn btn-sm btn-outline" size="mini" bindtap="onToggleGuide">{{showGuide ? '隐描红' : '显描红'}}</button>
-          <button class="btn btn-sm btn-danger" size="mini" bindtap="onClearWrite">清除</button>
+          <button class="btn btn-sm btn-outline" size="mini" bindtap="onSwitchWriteSource">{{writeSource === 'front' ? i18n.study.traceBack : i18n.study.traceFront}}</button>
+          <button class="btn btn-sm btn-outline" size="mini" bindtap="onToggleGuide">{{showGuide ? i18n.study.hideGuide : i18n.study.showGuide}}</button>
+          <button class="btn btn-sm btn-danger" size="mini" bindtap="onClearWrite">{{i18n.study.clear}}</button>
         </view>
       </view>
       <view class="write-canvas-wrap">
@@ -43,21 +43,21 @@
           bindtouchend="onWriteEnd"
         ></canvas>
       </view>
-      <text class="write-tip text-muted">用手指在方格内书写，边写边记忆笔画顺序</text>
+      <text class="write-tip text-muted">{{i18n.study.writeTip}}</text>
     </view>
 
     <view class="rate-bar" wx:if="{{showBack}}">
-      <button class="rate-btn again" data-q="0" bindtap="onRate">忘记</button>
-      <button class="rate-btn hard" data-q="1" bindtap="onRate">困难</button>
-      <button class="rate-btn good" data-q="2" bindtap="onRate">良好</button>
-      <button class="rate-btn easy" data-q="3" bindtap="onRate">简单</button>
+      <button class="rate-btn again" data-q="0" bindtap="onRate">{{i18n.study.again}}</button>
+      <button class="rate-btn hard" data-q="1" bindtap="onRate">{{i18n.study.hard}}</button>
+      <button class="rate-btn good" data-q="2" bindtap="onRate">{{i18n.study.good}}</button>
+      <button class="rate-btn easy" data-q="3" bindtap="onRate">{{i18n.study.easy}}</button>
     </view>
   </block>
 
   <view class="finished" wx:elif="{{finished}}">
     <text class="finished-emoji">🎉</text>
-    <text class="finished-text">本轮复习完成！</text>
-    <text class="text-muted">已复习 {{doneCount}} 张卡片</text>
-    <button class="btn" bindtap="onBack">返回牌组</button>
+    <text class="finished-text">{{i18n.study.finished}}</text>
+    <text class="text-muted">{{finishedSubText}}</text>
+    <button class="btn" bindtap="onBack">{{i18n.study.backToDecks}}</button>
   </view>
 </view>

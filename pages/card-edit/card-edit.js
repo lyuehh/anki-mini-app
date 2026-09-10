@@ -1,5 +1,6 @@
 const store = require('../../utils/store.js')
 const template = require('../../utils/template.js')
+const i18n = require('../../utils/i18n.js')
 
 Page({
   data: {
@@ -10,10 +11,13 @@ Page({
     back: '',
     // 模板相关
     tpl: null,          // 牌组绑定的模板（无则为 null）
-    fieldValues: {}     // 模板字段名 -> 输入值
+    tplFields: [],      // 模板字段的展示信息（含本地化占位符）
+    fieldValues: {},    // 模板字段名 -> 输入值
+    listTitle: ''       // 卡片列表标题（含数量，随语言切换）
   },
 
   onLoad(options) {
+    i18n.attach(this)
     this.setData({ deckId: options.deckId })
     this.refresh()
   },
@@ -23,7 +27,19 @@ Page({
     if (!deck) return
     wx.setNavigationBarTitle({ title: deck.name })
     const tpl = deck.templateId ? store.getTemplate(deck.templateId) : null
-    this.setData({ deckName: deck.name, cards: deck.cards, tpl })
+    // 每个字段预生成本地化占位符，供 WXML 直接绑定
+    const tplFields = tpl ? (tpl.fields || []).map(f => ({
+      name: f,
+      placeholder: i18n.t('cardEdit.fieldPlaceholder', { name: f })
+    })) : []
+    this.setData({
+      deckName: deck.name,
+      cards: deck.cards,
+      tpl,
+      tplFields,
+      tplHintText: tpl ? i18n.t('cardEdit.tplHint', { name: tpl.name }) : '',
+      listTitle: i18n.t('cardEdit.listTitle', { n: deck.cards.length })
+    })
   },
 
   onFrontInput(e) {
@@ -49,13 +65,13 @@ Page({
       const values = this.data.fieldValues
       const filled = (tpl.fields || []).some(f => (values[f] || '').trim())
       if (!filled) {
-        wx.showToast({ title: '请至少填写一个字段', icon: 'none' })
+        wx.showToast({ title: i18n.t('cardEdit.needOneField'), icon: 'none' })
         return
       }
       const front = template.render(tpl.front, values).trim()
       const back = template.render(tpl.back, values).trim()
       if (!front && !back) {
-        wx.showToast({ title: '渲染结果为空，请检查模板', icon: 'none' })
+        wx.showToast({ title: i18n.t('cardEdit.renderEmpty'), icon: 'none' })
         return
       }
       store.addCard(this.data.deckId, front, back, values)
@@ -67,7 +83,7 @@ Page({
     const front = this.data.front.trim()
     const back = this.data.back.trim()
     if (!front || !back) {
-      wx.showToast({ title: '正反面均需填写', icon: 'none' })
+      wx.showToast({ title: i18n.t('cardEdit.needBoth'), icon: 'none' })
       return
     }
     store.addCard(this.data.deckId, front, back)
@@ -78,8 +94,8 @@ Page({
   onDeleteCard(e) {
     const cardId = e.currentTarget.dataset.id
     wx.showModal({
-      title: '删除卡片',
-      content: '确定删除这张卡片？',
+      title: i18n.t('cardEdit.deleteTitle'),
+      content: i18n.t('cardEdit.deleteContent'),
       success: (res) => {
         if (res.confirm) {
           store.deleteCard(this.data.deckId, cardId)

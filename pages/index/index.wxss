@@ -80,3 +80,37 @@
   font-size: 26rpx;
   margin-top: 8rpx;
 }
+
+/* 语言切换 */
+.lang {
+  margin-top: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28rpx 32rpx;
+}
+
+.lang-label {
+  font-size: 28rpx;
+}
+
+.lang-opts {
+  display: flex;
+  gap: 16rpx;
+}
+
+.lang-opt {
+  padding: 12rpx 30rpx;
+  border-radius: 14rpx;
+  font-size: 28rpx;
+  color: var(--text-muted);
+  background: var(--primary-soft);
+  border: 2rpx solid transparent;
+}
+
+.lang-opt.active {
+  color: var(--primary);
+  border-color: var(--primary);
+  font-weight: 600;
+  background: #fff;
+}
