@@ -24,10 +24,13 @@ Page({
   },
 
   onLoad(options) {
-    i18n.attach(this)
     this.setData({ templateId: options.templateId })
-    this.refresh()
   },
+
+  onShow() {
+    i18n.attach(this)
+    this.refresh()
+  }
 
   refresh() {
     const tpl = store.getTemplate(this.data.templateId)
