@@ -111,21 +111,64 @@ Page({
 
   // ===== 导入 CSV =====
 
-  // 从微信会话选择 CSV 文件并导入
+  // 选择 CSV 文件并导入
+  //
+  // 本项目已转为多端应用（微信 / Android / iOS / 鸿蒙）。
+  // 微信客户端里 `wx.chooseMessageFile` 从会话选文件；但在 Android / iOS
+  // 衍生 App 上没有「微信会话」，需改用多端框架提供的 `wx.miniapp.chooseFile`
+  // 拉起系统文件选择器。这里按环境选择合适的选择器，二者都不可用时兜底。
+  // 参考：https://developers.weixin.qq.com/miniprogram/dev/platform-capabilities/miniapp/api/miniapp/chooseFile.html
   onImportCsv() {
-    wx.chooseMessageFile({
-      count: 1,
-      type: 'file',
-      extension: ['csv', 'txt'],
-      success: (res) => {
-        const file = res.tempFiles && res.tempFiles[0]
-        if (!file) return
-        this.readCsvFile(file.path)
-      },
-      fail: () => {
-        // 用户取消不提示
-      }
+    // wx.miniapp.chooseFile 仅在 Android / iOS 衍生 App 真机可用
+    // （不支持微信开发者工具、移动应用助手调试），故运行时探测存在性。
+    if (wx.miniapp && typeof wx.miniapp.chooseFile === 'function') {
+      wx.miniapp.chooseFile({
+        allowsMultipleSelection: false,
+        success: (res) => {
+          const file = res.tempFiles && res.tempFiles[0]
+          if (!file) return
+          if (!this.isCsvFile(file.name)) {
+            wx.showModal({ title: '文件类型不支持', content: '请选择 .csv 或 .txt 格式的文件。', showCancel: false })
+            return
+          }
+          this.readCsvFile(file.path)
+        },
+        fail: () => {
+          // 用户取消不提示
+        }
+      })
+      return
+    }
+
+    // 微信客户端 / 开发者工具：从会话选择文件
+    if (typeof wx.chooseMessageFile === 'function') {
+      wx.chooseMessageFile({
+        count: 1,
+        type: 'file',
+        extension: ['csv', 'txt'],
+        success: (res) => {
+          const file = res.tempFiles && res.tempFiles[0]
+          if (!file) return
+          this.readCsvFile(file.path)
+        },
+        fail: () => {
+          // 用户取消不提示
+        }
+      })
+      return
+    }
+
+    wx.showModal({
+      title: '无法选择文件',
+      content: '当前环境不支持文件选择，请在微信或已安装的 App 中操作。',
+      showCancel: false
     })
+  },
+
+  // 校验文件名后缀是否为受支持的 CSV/TXT
+  isCsvFile(name) {
+    if (!name) return true // 部分平台可能不返回文件名，此时不阻断
+    return /\.(csv|txt)$/i.test(name.trim())
   },
 
   // 读取文件内容并解析
