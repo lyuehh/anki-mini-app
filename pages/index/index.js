@@ -23,8 +23,8 @@ Page({
       d.cards.forEach(c => {
         cardCount++
         if (srs.isDue(c, now)) dueCount++
-        // 熟练：复习过 3 次以上且间隔大于等于 7 天
-        if (c.srs && c.srs.reps >= 3 && c.srs.interval >= 7) masteredCount++
+        // 熟练：FSRS 处于复习态且下次间隔 ≥ 7 天
+        if (srs.isMastered(c)) masteredCount++
       })
     })
     this.setData({
