@@ -15,7 +15,7 @@
 ## 项目速览
 
 - 平台：微信「多端应用」小程序，目标端包含 微信小程序 / Android / iOS / HarmonyOS（见 `project.miniapp.json`）。
-- 无后端，数据存于 `wx.storage`：牌组键 `anki_decks`、模板键 `anki_templates`（结构见 `README.md`）。
+- 无后端，数据存于微信本地存储（`wx.getStorageSync`/`wx.setStorageSync`）：牌组键 `anki_decks`、模板键 `anki_templates`（结构见 `README.md`）。
 - 页面用 WXML/WXSS，卡片内容为**纯文本模板变量替换**（`{{字段名}}`），不执行 HTML/JS/CSS。
 
 ### 目录结构
