@@ -16,7 +16,7 @@ Page({
     showGuide: true,        // 是否显示描红引导层
     writeSource: 'front',   // 描红内容取正面还是背面
     writeText: '',          // 当前描红文本
-    writeGuideSize: 160     // 描红字号（rpx）
+    writeGuideSize: 260     // 描红字号（rpx，随文本长度自适应）
   },
 
   onLoad(options) {
@@ -108,11 +108,32 @@ Page({
   syncWriteText() {
     const card = this.data.current
     if (!card) {
-      this.setData({ writeText: '' })
+      this.setData({ writeText: '', writeGuideSize: 260 })
       return
     }
     const text = this.data.writeSource === 'back' ? (card.back || '') : (card.front || '')
-    this.setData({ writeText: text })
+    this.setData({ writeText: text, writeGuideSize: this.computeGuideSize(text) })
+  },
+
+  // 根据文本长度自适应描红字号（rpx）：
+  // 单字/少字尽量大，方便描红；两字/四字或较长英文单词时按可用宽度自动缩小，避免溢出
+  computeGuideSize(text) {
+    const t = (text || '').trim()
+    if (!t) return 260
+    // 画布可用宽/高（rpx，预留内边距）
+    const AVAIL_W = 600
+    const AVAIL_H = 420
+    // 按字符类型估算总宽度：中日韩等全角字符约 1em，其余（英文/数字）约 0.6em
+    let units = 0
+    for (const ch of t) {
+      units += /[\u3400-\u9fff\u3040-\u30ff\uac00-\ud7af\uff00-\uffef]/.test(ch) ? 1 : 0.6
+    }
+    // 单行铺满宽度所需字号，并受高度上限约束
+    let size = Math.floor(AVAIL_W / Math.max(units, 1))
+    size = Math.min(size, AVAIL_H)
+    // 限制在合理区间：最小保证长文本可读，最大避免单字过分放大
+    size = Math.max(64, Math.min(size, 300))
+    return size
   },
 
   // 初始化 canvas 2d 上下文（含高清屏适配）
