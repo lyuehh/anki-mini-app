@@ -30,7 +30,7 @@ Page({
   onShow() {
     i18n.attach(this)
     this.refresh()
-  }
+  },
 
   refresh() {
     const tpl = store.getTemplate(this.data.templateId)

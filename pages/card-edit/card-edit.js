@@ -23,7 +23,7 @@ Page({
   onShow() {
     i18n.attach(this)
     this.refresh()
-  }
+  },
 
   refresh() {
     const deck = store.getDeck(this.data.deckId)
