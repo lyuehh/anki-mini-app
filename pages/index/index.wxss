@@ -32,13 +32,12 @@
 }
 
 .stat-grid {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 22rpx;
 }
 
 .stat {
-  width: calc(50% - 11rpx);
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
