@@ -14,6 +14,11 @@ const messages = {
   zh: {
     // 应用级
     appName: 'Anki',
+    // 导入导出（牌组文件）：store 侧回退用的默认命名
+    exchange: {
+      importedTemplate: '导入的模板',
+      importedDeck: '导入的牌组'
+    },
     // 首次启动写入的示例数据
     seed: {
       deckName: '示例牌组：常用英语单词',
@@ -59,6 +64,8 @@ const messages = {
     decks: {
       title: '我的牌组',
       importCsv: '导入 CSV',
+      importDeck: '导入牌组',
+      export: '导出',
       add: '+ 新建',
       totalCards: '共 {n} 张',
       due: '待复习 {n}',
@@ -102,7 +109,35 @@ const messages = {
       importFailTitle: '导入失败',
       importFailContent: '导入过程出错',
       readFailTitle: '读取失败',
-      readFailContent: '无法读取所选文件'
+      readFailContent: '无法读取所选文件',
+      // 导出 / 导入牌组（.json）
+      exportChooseTitle: '导出牌组',
+      exportWithProgress: '导出牌组 + 学习进度',
+      exportDeckOnly: '仅导出牌组（不含进度）',
+      exportEmptyTitle: '无法导出',
+      exportEmptyContent: '该牌组还没有卡片。',
+      exportFailTitle: '导出失败',
+      exportFailContent: '生成导出文件时出错',
+      exportSavedTitle: '导出成功',
+      exportSavedContent: '文件已生成，请选择保存或分享方式。',
+      exportFileName: '牌组文件名',
+      shareFailTitle: '分享失败',
+      shareFailContent: '无法分享该文件，请重试',
+      importDeckParseFailTitle: '导入失败',
+      importErrEmpty: '文件内容为空',
+      importErrInvalidJson: '文件不是有效的 JSON',
+      importErrNotObject: '文件格式不正确',
+      importErrWrongFormat: '这不是本应用导出的牌组文件',
+      importErrBadVersion: '文件版本无法识别',
+      importErrTooNew: '文件由更新版本的应用导出，请升级后再导入',
+      importErrNoDeck: '文件中缺少牌组数据',
+      importDeckConfirmTitle: '确认导入',
+      importDeckConfirmProgress: '将导入牌组「{deck}」（{n} 张卡片，含学习进度）{tpl}，是否继续？',
+      importDeckConfirmNoProgress: '将导入牌组「{deck}」（{n} 张卡片，不含进度）{tpl}，是否继续？',
+      importDeckWithTpl: '并带上模板「{name}」',
+      importDeckNoTpl: '（无模板）',
+      importDeckDoneTitle: '导入完成',
+      importDeckDoneContent: '已导入牌组「{deck}」，共 {n} 张卡片。'
     },
     // 模板列表页
     templates: {
@@ -191,6 +226,10 @@ const messages = {
   },
   en: {
     appName: 'Anki',
+    exchange: {
+      importedTemplate: 'Imported Template',
+      importedDeck: 'Imported Deck'
+    },
     seed: {
       deckName: 'Sample Deck: Common English Words',
       tplName: 'Sample Template: Word Card',
@@ -231,6 +270,8 @@ const messages = {
     decks: {
       title: 'My Decks',
       importCsv: 'Import CSV',
+      importDeck: 'Import Deck',
+      export: 'Export',
       add: '+ New',
       totalCards: '{n} cards',
       due: '{n} due',
@@ -274,7 +315,35 @@ const messages = {
       importFailTitle: 'Import Failed',
       importFailContent: 'An error occurred during import',
       readFailTitle: 'Read Failed',
-      readFailContent: 'Unable to read the selected file'
+      readFailContent: 'Unable to read the selected file',
+      // Export / import deck (.json)
+      exportChooseTitle: 'Export Deck',
+      exportWithProgress: 'Export deck + study progress',
+      exportDeckOnly: 'Export deck only (no progress)',
+      exportEmptyTitle: 'Cannot Export',
+      exportEmptyContent: 'This deck has no cards yet.',
+      exportFailTitle: 'Export Failed',
+      exportFailContent: 'An error occurred while generating the export file',
+      exportSavedTitle: 'Export Ready',
+      exportSavedContent: 'File generated. Choose how to save or share it.',
+      exportFileName: 'Deck file name',
+      shareFailTitle: 'Share Failed',
+      shareFailContent: 'Unable to share this file, please retry',
+      importDeckParseFailTitle: 'Import Failed',
+      importErrEmpty: 'The file is empty',
+      importErrInvalidJson: 'The file is not valid JSON',
+      importErrNotObject: 'The file format is invalid',
+      importErrWrongFormat: 'This is not a deck file exported by this app',
+      importErrBadVersion: 'Unrecognized file version',
+      importErrTooNew: 'This file was exported by a newer app version; please upgrade before importing',
+      importErrNoDeck: 'The file has no deck data',
+      importDeckConfirmTitle: 'Confirm Import',
+      importDeckConfirmProgress: 'Import deck “{deck}” ({n} cards, with study progress){tpl}. Continue?',
+      importDeckConfirmNoProgress: 'Import deck “{deck}” ({n} cards, no progress){tpl}. Continue?',
+      importDeckWithTpl: ' with template “{name}”',
+      importDeckNoTpl: ' (no template)',
+      importDeckDoneTitle: 'Import Complete',
+      importDeckDoneContent: 'Imported deck “{deck}” with {n} cards.'
     },
     templates: {
       title: 'Card Templates',

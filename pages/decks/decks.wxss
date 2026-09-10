@@ -3,12 +3,16 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: 28rpx;
+  flex-wrap: wrap;
+  gap: 16rpx;
 }
 
 .header-actions {
   display: flex;
   align-items: center;
   gap: 16rpx;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .btn-import {

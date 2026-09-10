@@ -2,6 +2,7 @@
 const template = require('./template.js')
 const i18n = require('./i18n.js')
 const srs = require('./srs.js')
+const exchange = require('./exchange.js')
 
 const KEY = 'anki_decks'
 const TPL_KEY = 'anki_templates'
@@ -261,11 +262,106 @@ function deleteTemplateField(templateId, fieldName) {
   return tpl
 }
 
+// ===== 导入 / 导出 =====
+
+// 构建某牌组的导出文本（JSON）。
+//   deckId: 要导出的牌组
+//   includeProgress: 是否带上学习进度（SRS 状态）
+// 始终带上牌组绑定的模板（若有）。返回 JSON 字符串。
+function exportDeck(deckId, includeProgress) {
+  const deck = getDeck(deckId)
+  if (!deck) throw new Error('牌组不存在')
+  const tpl = deck.templateId ? getTemplate(deck.templateId) : null
+  const obj = exchange.build(deck, tpl, { includeProgress: !!includeProgress })
+  return exchange.stringify(obj)
+}
+
+// 找一个字段集合完全一致的既有模板（用于导入时复用，避免重复创建同名模板）
+function _findMatchingTemplate(tplData) {
+  if (!tplData) return null
+  const target = (tplData.fields || []).slice().sort()
+  return _loadTemplates().find(t => {
+    if ((t.name || '') !== (tplData.name || '')) return false
+    if ((t.front || '') !== (tplData.front || '')) return false
+    if ((t.back || '') !== (tplData.back || '')) return false
+    const fs = (t.fields || []).slice().sort()
+    return fs.length === target.length && fs.every((f, i) => f === target[i])
+  }) || null
+}
+
+// 从导出文本导入一个牌组。
+//   text: exportDeck 产出的 JSON（或兼容格式）
+// 行为：
+//   - 若文件带模板：复用完全相同的既有模板，否则新建一个模板。
+//   - 新建牌组并绑定该模板；卡片重新分配 id。
+//   - 若卡片带 srs 则接续该学习进度（经 srs.normalize 规整），否则以新卡起始。
+// 返回 { deck, imported, template, includeProgress }
+function importDeck(text) {
+  const parsed = exchange.parse(text)
+  const now = Date.now()
+
+  // 处理模板：优先复用，否则新建
+  let templateId = ''
+  let tpl = null
+  if (parsed.template) {
+    const existing = _findMatchingTemplate(parsed.template)
+    if (existing) {
+      tpl = existing
+    } else {
+      const templates = _loadTemplates()
+      tpl = {
+        id: genId(),
+        name: parsed.template.name || i18n.t('exchange.importedTemplate'),
+        createdAt: now,
+        fields: parsed.template.fields || [],
+        front: parsed.template.front || '',
+        back: parsed.template.back || '',
+        scale: parsed.template.scale || 1
+      }
+      templates.push(tpl)
+      _saveTemplates(templates)
+    }
+    templateId = tpl.id
+  }
+
+  const decks = _load()
+  const deck = {
+    id: genId(),
+    name: parsed.deck.name || (tpl ? tpl.name : '') || i18n.t('exchange.importedDeck'),
+    templateId,
+    createdAt: now,
+    cards: []
+  }
+  let imported = 0
+  parsed.deck.cards.forEach(c => {
+    const card = {
+      id: genId(),
+      front: c.front || '',
+      back: c.back || ''
+    }
+    if (c.fields && Object.keys(c.fields).length) card.fields = Object.assign({}, c.fields)
+    if (c.srs) {
+      // 接续已有学习进度：规整为 FSRS 状态（兼容旧版 SM-2）
+      const norm = srs.normalize(c.srs)
+      card.srs = norm || Object.assign(srs.defaultSrs(), { due: now })
+    } else {
+      // 不带进度：作为新卡，立即到期可学
+      card.srs = Object.assign(srs.defaultSrs(), { due: now })
+    }
+    deck.cards.push(card)
+    imported++
+  })
+  decks.push(deck)
+  _save(decks)
+  return { deck, imported, template: tpl, includeProgress: parsed.includeProgress }
+}
+
 module.exports = {
   init, genId,
   getDecks, getDeck, addDeck, updateDeck, deleteDeck,
   addCard, updateCard, deleteCard,
   importDeckFromCsv,
+  exportDeck, importDeck,
   getTemplates, getTemplate, addTemplate, updateTemplate, deleteTemplate,
   countTemplateCards, refreshCardsByTemplate,
   addTemplateField, deleteTemplateField
