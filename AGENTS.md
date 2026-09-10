@@ -1,6 +1,6 @@
 # AGENTS.md
 
-本文件面向在本仓库工作的编码 Agent。仓库是一个**基于间隔重复（SM-2）的记忆卡片微信多端小程序**，数据全部保存在本地存储，无后端。项目背景与功能详见 `README.md`。
+本文件面向在本仓库工作的编码 Agent。仓库是一个**基于间隔重复（FSRS）的记忆卡片微信多端小程序**，数据全部保存在本地存储，无后端。项目背景与功能详见 `README.md`。
 
 ## 协作与提交规范（重要）
 
@@ -25,7 +25,7 @@
 ├── project.miniapp.json              # 多端应用配置（Android/iOS/HarmonyOS）
 ├── utils/
 │   ├── store.js      # 本地存储数据层（牌组/卡片/模板 CRUD）
-│   ├── srs.js        # SM-2 间隔重复算法
+│   ├── srs.js        # FSRS 间隔重复算法（兼容旧版 SM-2 数据迁移）
 │   ├── csv.js        # Anki CSV 解析
 │   └── template.js   # 纯文本模板渲染（{{字段}} 替换与校验）
 └── pages/            # index(统计) / decks / templates / template-edit / study / card-edit

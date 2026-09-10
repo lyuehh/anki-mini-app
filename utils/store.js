@@ -1,6 +1,7 @@
 // utils/store.js - 基于本地存储的数据层
 const template = require('./template.js')
 const i18n = require('./i18n.js')
+const srs = require('./srs.js')
 
 const KEY = 'anki_decks'
 const TPL_KEY = 'anki_templates'
@@ -46,7 +47,7 @@ function init() {
         name: seed.deckName,
         createdAt: now,
         cards: seed.cards.map(c => ({
-          id: genId(), front: c.front, back: c.back, srs: { ease: 2.5, interval: 0, reps: 0, due: now }
+          id: genId(), front: c.front, back: c.back, srs: Object.assign(srs.defaultSrs(), { due: now })
         }))
       }
     ])
@@ -105,7 +106,7 @@ function addCard(deckId, front, back, fields) {
     id: genId(),
     front,
     back,
-    srs: { ease: 2.5, interval: 0, reps: 0, due: Date.now() }
+    srs: srs.defaultSrs()
   }
   // 使用模板创建的卡片保存字段原始值，便于模板更新后重新渲染正反面
   if (fields && Object.keys(fields).length) card.fields = Object.assign({}, fields)
@@ -156,7 +157,7 @@ function importDeckFromCsv(deckName, templateId, columns, rows) {
       front,
       back,
       fields,
-      srs: { ease: 2.5, interval: 0, reps: 0, due: now }
+      srs: Object.assign(srs.defaultSrs(), { due: now })
     })
     imported++
   })
