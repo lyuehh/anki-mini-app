@@ -116,23 +116,30 @@ Page({
   },
 
   // 根据文本长度自适应描红字号（rpx）：
-  // 单字/少字尽量大，方便描红；两字/四字或较长英文单词时按可用宽度自动缩小，避免溢出
+  // 单字/少字尽量大，方便描红；多字/多行/较长英文单词时按可用宽高自动缩小，避免溢出
   computeGuideSize(text) {
-    const t = (text || '').trim()
-    if (!t) return 260
+    const t = text || ''
+    if (!t.trim()) return 260
     // 画布可用宽/高（rpx，预留内边距）
     const AVAIL_W = 600
     const AVAIL_H = 420
-    // 按字符类型估算总宽度：中日韩等全角字符约 1em，其余（英文/数字）约 0.6em
-    let units = 0
-    for (const ch of t) {
-      units += /[\u3400-\u9fff\u3040-\u30ff\uac00-\ud7af\uff00-\uffef]/.test(ch) ? 1 : 0.6
+    const LINE_HEIGHT = 1.2
+    // 保留换行（含空行）：按行拆分，宽度取最宽行，高度按行数
+    const lines = t.split('\n')
+    let maxUnits = 0
+    for (const line of lines) {
+      // 按字符类型估算行宽：中日韩等全角字符约 1em，其余（英文/数字）约 0.6em
+      let units = 0
+      for (const ch of line) {
+        units += /[\u3400-\u9fff\u3040-\u30ff\uac00-\ud7af\uff00-\uffef]/.test(ch) ? 1 : 0.6
+      }
+      if (units > maxUnits) maxUnits = units
     }
-    // 单行铺满宽度所需字号，并受高度上限约束
-    let size = Math.floor(AVAIL_W / Math.max(units, 1))
-    size = Math.min(size, AVAIL_H)
-    // 限制在合理区间：最小保证长文本可读，最大避免单字过分放大
-    size = Math.max(64, Math.min(size, 300))
+    const byWidth = AVAIL_W / Math.max(maxUnits, 1)
+    const byHeight = AVAIL_H / (lines.length * LINE_HEIGHT)
+    let size = Math.floor(Math.min(byWidth, byHeight))
+    // 限制在合理区间：最小保证长/多行文本可读，最大避免单字过分放大
+    size = Math.max(48, Math.min(size, 300))
     return size
   },
 

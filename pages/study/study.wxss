@@ -141,8 +141,8 @@
   font-weight: 600;
   text-align: center;
   pointer-events: none;
-  white-space: nowrap;
-  line-height: 1;
+  white-space: pre-line;
+  line-height: 1.2;
   padding: 16rpx;
   box-sizing: border-box;
 }
