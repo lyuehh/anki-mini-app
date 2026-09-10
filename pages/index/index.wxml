@@ -1,8 +1,8 @@
 <view class="container">
   <view class="hero card">
     <view class="hero-text">
-      <text class="hero-title">学习统计</text>
-      <text class="hero-sub">坚持复习，记得更牢 ✨</text>
+      <text class="hero-title">{{i18n.index.heroTitle}}</text>
+      <text class="hero-sub">{{i18n.index.heroSub}}</text>
     </view>
     <text class="hero-emoji">📊</text>
   </view>
@@ -11,22 +11,31 @@
     <view class="stat card">
       <view class="stat-icon icon-deck">🗂️</view>
       <text class="stat-num">{{deckCount}}</text>
-      <text class="stat-label text-muted">牌组</text>
+      <text class="stat-label text-muted">{{i18n.index.deckCount}}</text>
     </view>
     <view class="stat card">
       <view class="stat-icon icon-card">🃏</view>
       <text class="stat-num">{{cardCount}}</text>
-      <text class="stat-label text-muted">卡片总数</text>
+      <text class="stat-label text-muted">{{i18n.index.cardCount}}</text>
     </view>
     <view class="stat card">
       <view class="stat-icon icon-due">⏰</view>
       <text class="stat-num due">{{dueCount}}</text>
-      <text class="stat-label text-muted">待复习</text>
+      <text class="stat-label text-muted">{{i18n.index.dueCount}}</text>
     </view>
     <view class="stat card">
       <view class="stat-icon icon-mastered">🏆</view>
       <text class="stat-num mastered">{{masteredCount}}</text>
-      <text class="stat-label text-muted">已掌握</text>
+      <text class="stat-label text-muted">{{i18n.index.masteredCount}}</text>
+    </view>
+  </view>
+
+  <!-- 语言切换 -->
+  <view class="lang card">
+    <text class="lang-label text-muted">{{i18n.index.langLabel}}</text>
+    <view class="lang-opts">
+      <view class="lang-opt {{locale === 'zh' ? 'active' : ''}}" data-locale="zh" bindtap="onSwitchLocale">{{i18n.index.langZh}}</view>
+      <view class="lang-opt {{locale === 'en' ? 'active' : ''}}" data-locale="en" bindtap="onSwitchLocale">{{i18n.index.langEn}}</view>
     </view>
   </view>
 </view>

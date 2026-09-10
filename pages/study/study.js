@@ -1,5 +1,6 @@
 const store = require('../../utils/store.js')
 const srs = require('../../utils/srs.js')
+const i18n = require('../../utils/i18n.js')
 
 Page({
   data: {
@@ -16,14 +17,19 @@ Page({
     showGuide: true,        // 是否显示描红引导层
     writeSource: 'front',   // 描红内容取正面还是背面
     writeText: '',          // 当前描红文本
-    writeGuideSize: 260     // 描红字号（rpx，随文本长度自适应）
+    writeGuideSize: 260,    // 描红字号（rpx，随文本长度自适应）
+    // 含占位符的文案（随语言切换重算）
+    progressText: '',
+    finishedSubText: '',
+    writeHeadText: ''
   },
 
   onLoad(options) {
+    i18n.attach(this)
     const deckId = options.deckId
     const deck = store.getDeck(deckId)
     if (!deck) {
-      wx.showToast({ title: '牌组不存在', icon: 'none' })
+      wx.showToast({ title: i18n.t('study.deckNotExist'), icon: 'none' })
       return
     }
     const now = Date.now()
@@ -37,19 +43,30 @@ Page({
       finished: queue.length === 0
     })
     wx.setNavigationBarTitle({ title: deck.name })
+    this.updateProgress()
     this.next()
+  },
+
+  // 更新含占位符的进度/统计文案（随语言切换）
+  updateProgress() {
+    this.setData({
+      progressText: i18n.t('study.progress', { left: this.data.queue.length, done: this.data.doneCount }),
+      finishedSubText: i18n.t('study.finishedSub', { n: this.data.doneCount })
+    })
   },
 
   next() {
     const queue = this.data.queue
     if (queue.length === 0) {
       this.setData({ current: null, finished: true })
+      this.updateProgress()
       return
     }
     this.setData({ current: queue[0], showBack: false })
     // 换卡片时清空画布并同步描红文本
     this.syncWriteText()
     this.clearCanvas()
+    this.updateProgress()
   },
 
   onFlip() {
@@ -107,12 +124,14 @@ Page({
   // 根据当前卡片和来源更新描红文本
   syncWriteText() {
     const card = this.data.current
+    const sourceLabel = this.data.writeSource === 'front' ? i18n.t('study.front') : i18n.t('study.back')
+    const writeHeadText = i18n.t('study.writeHead', { source: sourceLabel })
     if (!card) {
-      this.setData({ writeText: '', writeGuideSize: 260 })
+      this.setData({ writeText: '', writeGuideSize: 260, writeHeadText })
       return
     }
     const text = this.data.writeSource === 'back' ? (card.back || '') : (card.front || '')
-    this.setData({ writeText: text, writeGuideSize: this.computeGuideSize(text) })
+    this.setData({ writeText: text, writeGuideSize: this.computeGuideSize(text), writeHeadText })
   },
 
   // 根据文本长度自适应描红字号（rpx）：

@@ -1,7 +1,7 @@
 <view class="container">
   <view class="header">
-    <text class="title">卡片模板</text>
-    <button class="btn btn-add" size="mini" bindtap="onAddTemplate">+ 新建</button>
+    <text class="title">{{i18n.templates.title}}</text>
+    <button class="btn btn-add" size="mini" bindtap="onAddTemplate">{{i18n.templates.add}}</button>
   </view>
 
   <block wx:if="{{templates.length > 0}}">
@@ -9,16 +9,16 @@
       <view class="tpl-icon">📝</view>
       <view class="tpl-info">
         <text class="tpl-name">{{item.name}}</text>
-        <text class="text-muted">{{item.fieldCount}} 个字段</text>
+        <text class="text-muted">{{item.fieldCountText}}</text>
       </view>
       <view class="tpl-actions">
-        <button class="btn btn-sm btn-outline" size="mini" data-id="{{item.id}}" bindtap="onEdit">编辑</button>
-        <button class="btn btn-sm btn-danger" size="mini" data-id="{{item.id}}" bindtap="onDelete">删除</button>
+        <button class="btn btn-sm btn-outline" size="mini" data-id="{{item.id}}" bindtap="onEdit">{{i18n.templates.edit}}</button>
+        <button class="btn btn-sm btn-danger" size="mini" data-id="{{item.id}}" bindtap="onDelete">{{i18n.templates.delete}}</button>
       </view>
     </view>
   </block>
 
   <view class="empty" wx:else>
-    <text class="text-muted">还没有模板，点击右上角新建一个吧</text>
+    <text class="text-muted">{{i18n.templates.empty}}</text>
   </view>
 </view>

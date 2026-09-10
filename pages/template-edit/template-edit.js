@@ -1,5 +1,6 @@
 const store = require('../../utils/store.js')
 const template = require('../../utils/template.js')
+const i18n = require('../../utils/i18n.js')
 
 Page({
   data: {
@@ -24,13 +25,17 @@ Page({
 
   onLoad(options) {
     this.setData({ templateId: options.templateId })
-    this.refresh()
   },
+
+  onShow() {
+    i18n.attach(this)
+    this.refresh()
+  }
 
   refresh() {
     const tpl = store.getTemplate(this.data.templateId)
     if (!tpl) {
-      wx.showToast({ title: '模板不存在', icon: 'none' })
+      wx.showToast({ title: i18n.t('templateEdit.notExist'), icon: 'none' })
       return
     }
     wx.setNavigationBarTitle({ title: tpl.name })
@@ -63,11 +68,11 @@ Page({
   onAddField() {
     const name = this.data.newField.trim()
     if (!name) {
-      wx.showToast({ title: '请输入字段名', icon: 'none' })
+      wx.showToast({ title: i18n.t('templateEdit.needFieldName'), icon: 'none' })
       return
     }
     if (this.data.fields.indexOf(name) !== -1) {
-      wx.showToast({ title: '字段已存在', icon: 'none' })
+      wx.showToast({ title: i18n.t('templateEdit.fieldExists'), icon: 'none' })
       return
     }
     store.addTemplateField(this.data.templateId, name)
@@ -78,8 +83,8 @@ Page({
   onDeleteField(e) {
     const name = e.currentTarget.dataset.name
     wx.showModal({
-      title: '删除字段',
-      content: `确定删除字段「${name}」？模板中使用到它的地方将失效。`,
+      title: i18n.t('templateEdit.deleteFieldTitle'),
+      content: i18n.t('templateEdit.deleteFieldContent', { name }),
       success: (res) => {
         if (res.confirm) {
           store.deleteTemplateField(this.data.templateId, name)
@@ -130,8 +135,8 @@ Page({
     const unknown = unknownFront.concat(unknownBack.filter(n => unknownFront.indexOf(n) === -1))
     if (unknown.length > 0) {
       wx.showModal({
-        title: '存在未定义字段',
-        content: `以下字段不属于本模板：${unknown.join('、')}。请先添加为字段，或从模板中移除。`,
+        title: i18n.t('templateEdit.unknownTitle'),
+        content: i18n.t('templateEdit.unknownContent', { fields: unknown.join('、') }),
         showCancel: false
       })
       return
@@ -141,9 +146,9 @@ Page({
     const affected = store.countTemplateCards(this.data.templateId)
     if (affected > 0) {
       wx.showModal({
-        title: '确认保存',
-        content: `保存后将用新模板重新渲染 ${affected} 张已有卡片的正反面，是否继续？`,
-        confirmText: '保存并刷新',
+        title: i18n.t('templateEdit.confirmSaveTitle'),
+        content: i18n.t('templateEdit.confirmSaveContent', { n: affected }),
+        confirmText: i18n.t('templateEdit.saveRefresh'),
         success: (res) => {
           if (res.confirm) this.doSave(front, back, true)
         }
@@ -157,9 +162,9 @@ Page({
     store.updateTemplate(this.data.templateId, { front, back, scale: this.data.scale })
     if (refresh) {
       const n = store.refreshCardsByTemplate(this.data.templateId)
-      wx.showToast({ title: `已保存，刷新 ${n} 张卡片`, icon: 'none' })
+      wx.showToast({ title: i18n.t('templateEdit.savedRefresh', { n }), icon: 'none' })
     } else {
-      wx.showToast({ title: '已保存', icon: 'success' })
+      wx.showToast({ title: i18n.t('templateEdit.saved'), icon: 'success' })
     }
   }
 })

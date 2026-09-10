@@ -1,6 +1,7 @@
 const store = require('../../utils/store.js')
 const srs = require('../../utils/srs.js')
 const csv = require('../../utils/csv.js')
+const i18n = require('../../utils/i18n.js')
 
 Page({
   data: {
@@ -8,6 +9,8 @@ Page({
   },
 
   onShow() {
+    i18n.attach(this)
+    wx.setNavigationBarTitle({ title: i18n.t('nav.decks') })
     this.refresh()
   },
 
@@ -18,16 +21,27 @@ Page({
       const total = d.cards.length
       const due = d.cards.filter(c => srs.isDue(c, now)).length
       const tpl = d.templateId ? templates.find(t => t.id === d.templateId) : null
-      return { id: d.id, name: d.name, total, due, templateName: tpl ? tpl.name : '' }
+      const templateName = tpl ? tpl.name : ''
+      return {
+        id: d.id,
+        name: d.name,
+        total,
+        due,
+        templateName,
+        // 含占位符的文案在此渲染，便于随语言切换
+        totalText: i18n.t('decks.totalCards', { n: total }),
+        dueText: due > 0 ? i18n.t('decks.due', { n: due }) : i18n.t('decks.finished'),
+        tplText: templateName ? i18n.t('decks.template', { name: templateName }) : i18n.t('decks.noTemplate')
+      }
     })
     this.setData({ decks })
   },
 
   onAddDeck() {
     wx.showModal({
-      title: '新建牌组',
+      title: i18n.t('decks.addTitle'),
       editable: true,
-      placeholderText: '请输入牌组名称',
+      placeholderText: i18n.t('decks.addPlaceholder'),
       success: (res) => {
         if (res.confirm && res.content && res.content.trim()) {
           this.pickTemplate(res.content.trim())
@@ -41,9 +55,9 @@ Page({
     const templates = store.getTemplates()
     if (templates.length === 0) {
       wx.showModal({
-        title: '暂无模板',
-        content: '还没有任何模板，将创建不使用模板的牌组。可到「模板」页新建模板后再指定。',
-        confirmText: '继续',
+        title: i18n.t('decks.noTplTitle'),
+        content: i18n.t('decks.noTplContent'),
+        confirmText: i18n.t('decks.continue'),
         success: (res) => {
           if (res.confirm) {
             store.addDeck(name, '')
@@ -53,7 +67,7 @@ Page({
       })
       return
     }
-    const itemList = templates.map(t => t.name).concat(['不使用模板'])
+    const itemList = templates.map(t => t.name).concat([i18n.t('decks.noTplItem')])
     wx.showActionSheet({
       itemList,
       success: (res) => {
@@ -70,10 +84,10 @@ Page({
     const id = e.currentTarget.dataset.id
     const templates = store.getTemplates()
     if (templates.length === 0) {
-      wx.showToast({ title: '暂无可用模板', icon: 'none' })
+      wx.showToast({ title: i18n.t('decks.noTplToast'), icon: 'none' })
       return
     }
-    const itemList = templates.map(t => t.name).concat(['不使用模板'])
+    const itemList = templates.map(t => t.name).concat([i18n.t('decks.noTplItem')])
     wx.showActionSheet({
       itemList,
       success: (res) => {
@@ -98,8 +112,8 @@ Page({
   onDelete(e) {
     const id = e.currentTarget.dataset.id
     wx.showModal({
-      title: '删除牌组',
-      content: '确定删除该牌组及其所有卡片？',
+      title: i18n.t('decks.deleteTitle'),
+      content: i18n.t('decks.deleteContent'),
       success: (res) => {
         if (res.confirm) {
           store.deleteDeck(id)
@@ -128,7 +142,7 @@ Page({
           const file = res.tempFiles && res.tempFiles[0]
           if (!file) return
           if (!this.isCsvFile(file.name)) {
-            wx.showModal({ title: '文件类型不支持', content: '请选择 .csv 或 .txt 格式的文件。', showCancel: false })
+            wx.showModal({ title: i18n.t('decks.fileTypeTitle'), content: i18n.t('decks.fileTypeContent'), showCancel: false })
             return
           }
           this.readCsvFile(file.path)
@@ -159,8 +173,8 @@ Page({
     }
 
     wx.showModal({
-      title: '无法选择文件',
-      content: '当前环境不支持文件选择，请在微信或已安装的 App 中操作。',
+      title: i18n.t('decks.cannotChooseTitle'),
+      content: i18n.t('decks.cannotChooseContent'),
       showCancel: false
     })
   },
@@ -182,21 +196,21 @@ Page({
         try {
           parsed = csv.parse(res.data)
         } catch (err) {
-          wx.showModal({ title: '解析失败', content: err.message || '无法解析该 CSV 文件', showCancel: false })
+          wx.showModal({ title: i18n.t('decks.parseFailTitle'), content: err.message || i18n.t('decks.parseFailContent'), showCancel: false })
           return
         }
         if (!parsed.columns || parsed.columns.length === 0) {
-          wx.showModal({ title: '缺少列定义', content: 'CSV 文件缺少 #columns 配置行，无法确定各列对应的字段名。', showCancel: false })
+          wx.showModal({ title: i18n.t('decks.noColumnsTitle'), content: i18n.t('decks.noColumnsContent'), showCancel: false })
           return
         }
         if (!parsed.rows || parsed.rows.length === 0) {
-          wx.showModal({ title: '没有数据', content: 'CSV 文件中没有可导入的卡片数据。', showCancel: false })
+          wx.showModal({ title: i18n.t('decks.noRowsTitle'), content: i18n.t('decks.noRowsContent'), showCancel: false })
           return
         }
         this.pickTemplateForImport(parsed)
       },
       fail: () => {
-        wx.showModal({ title: '读取失败', content: '无法读取所选文件', showCancel: false })
+        wx.showModal({ title: i18n.t('decks.readFailTitle'), content: i18n.t('decks.readFailContent'), showCancel: false })
       }
     })
   },
@@ -206,8 +220,8 @@ Page({
     const templates = store.getTemplates()
     if (templates.length === 0) {
       wx.showModal({
-        title: '暂无模板',
-        content: '导入 CSV 需要先创建模板，并使模板字段与 CSV 的 #columns 严格匹配。请到「模板」页新建模板。',
+        title: i18n.t('decks.noTplTitle'),
+        content: i18n.t('decks.importNoTplContent'),
         showCancel: false
       })
       return
@@ -230,29 +244,29 @@ Page({
     const extra = fields.filter(f => columns.indexOf(f) === -1)
     if (missing.length > 0 || extra.length > 0) {
       const parts = []
-      if (missing.length) parts.push(`CSV 有而模板缺少：${missing.join('、')}`)
-      if (extra.length) parts.push(`模板有而 CSV 缺少：${extra.join('、')}`)
+      if (missing.length) parts.push(i18n.t('decks.mismatchCsvOnly', { fields: missing.join('、') }))
+      if (extra.length) parts.push(i18n.t('decks.mismatchTplOnly', { fields: extra.join('、') }))
       wx.showModal({
-        title: '字段不匹配',
-        content: `模板「${tpl.name}」的字段与 CSV 的列必须严格匹配。\n${parts.join('\n')}`,
+        title: i18n.t('decks.mismatchTitle'),
+        content: i18n.t('decks.mismatchContent', { name: tpl.name, detail: parts.join('\n') }),
         showCancel: false
       })
       return
     }
 
-    const deckName = parsed.deckName || tpl.name + ' 导入'
+    const deckName = parsed.deckName || tpl.name + i18n.t('decks.importedSuffix')
     wx.showModal({
-      title: '确认导入',
-      content: `将使用模板「${tpl.name}」把 ${parsed.rows.length} 行数据导入到牌组「${deckName}」，是否继续？`,
-      confirmText: '导入',
+      title: i18n.t('decks.confirmImportTitle'),
+      content: i18n.t('decks.confirmImportContent', { tpl: tpl.name, n: parsed.rows.length, deck: deckName }),
+      confirmText: i18n.t('decks.importConfirm'),
       success: (res) => {
         if (!res.confirm) return
         try {
           const result = store.importDeckFromCsv(deckName, tpl.id, columns, parsed.rows)
-          wx.showToast({ title: `已导入 ${result.imported} 张卡片`, icon: 'none' })
+          wx.showToast({ title: i18n.t('decks.importedToast', { n: result.imported }), icon: 'none' })
           this.refresh()
         } catch (err) {
-          wx.showModal({ title: '导入失败', content: err.message || '导入过程出错', showCancel: false })
+          wx.showModal({ title: i18n.t('decks.importFailTitle'), content: err.message || i18n.t('decks.importFailContent'), showCancel: false })
         }
       }
     })

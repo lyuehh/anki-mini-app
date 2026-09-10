@@ -1,9 +1,9 @@
 <view class="container">
   <view class="header">
-    <text class="title">我的牌组</text>
+    <text class="title">{{i18n.decks.title}}</text>
     <view class="header-actions">
-      <button class="btn btn-add btn-import" size="mini" bindtap="onImportCsv">导入 CSV</button>
-      <button class="btn btn-add" size="mini" bindtap="onAddDeck">+ 新建</button>
+      <button class="btn btn-add btn-import" size="mini" bindtap="onImportCsv">{{i18n.decks.importCsv}}</button>
+      <button class="btn btn-add" size="mini" bindtap="onAddDeck">{{i18n.decks.add}}</button>
     </view>
   </view>
 
@@ -12,25 +12,25 @@
       <view class="deck-info">
         <text class="deck-name">{{item.name}}</text>
         <view class="deck-meta">
-          <text class="text-muted">共 {{item.total}} 张</text>
-          <text class="due-badge" wx:if="{{item.due > 0}}">待复习 {{item.due}}</text>
-          <text class="text-muted" wx:else>已完成</text>
+          <text class="text-muted">{{item.totalText}}</text>
+          <text class="due-badge" wx:if="{{item.due > 0}}">{{item.dueText}}</text>
+          <text class="text-muted" wx:else>{{item.dueText}}</text>
         </view>
         <view class="deck-meta">
-          <text class="tpl-badge" wx:if="{{item.templateName}}">模板：{{item.templateName}}</text>
-          <text class="text-muted" wx:else>未指定模板</text>
+          <text class="tpl-badge" wx:if="{{item.templateName}}">{{item.tplText}}</text>
+          <text class="text-muted" wx:else>{{item.tplText}}</text>
         </view>
       </view>
       <view class="deck-actions">
-        <button class="btn btn-sm" size="mini" data-id="{{item.id}}" bindtap="onStudy">学习</button>
-        <button class="btn btn-sm btn-outline" size="mini" data-id="{{item.id}}" bindtap="onManage">管理</button>
-        <button class="btn btn-sm btn-outline" size="mini" data-id="{{item.id}}" bindtap="onChangeTemplate">模板</button>
-        <button class="btn btn-sm btn-danger" size="mini" data-id="{{item.id}}" bindtap="onDelete">删除</button>
+        <button class="btn btn-sm" size="mini" data-id="{{item.id}}" bindtap="onStudy">{{i18n.decks.study}}</button>
+        <button class="btn btn-sm btn-outline" size="mini" data-id="{{item.id}}" bindtap="onManage">{{i18n.decks.manage}}</button>
+        <button class="btn btn-sm btn-outline" size="mini" data-id="{{item.id}}" bindtap="onChangeTemplate">{{i18n.decks.templateBtn}}</button>
+        <button class="btn btn-sm btn-danger" size="mini" data-id="{{item.id}}" bindtap="onDelete">{{i18n.decks.delete}}</button>
       </view>
     </view>
   </block>
 
   <view class="empty" wx:else>
-    <text class="text-muted">还没有牌组，点击右上角新建一个吧</text>
+    <text class="text-muted">{{i18n.decks.empty}}</text>
   </view>
 </view>

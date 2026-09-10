@@ -1,10 +1,10 @@
 <view class="container">
   <!-- 字段管理 -->
   <view class="card section">
-    <text class="form-title">字段（只有字段才能作为变量加入模板）</text>
+    <text class="form-title">{{i18n.templateEdit.fieldsTitle}}</text>
     <view class="add-field">
-      <input class="input" placeholder="新字段名称" value="{{newField}}" bindinput="onNewFieldInput" />
-      <button class="btn btn-sm" size="mini" bindtap="onAddField">添加</button>
+      <input class="input" placeholder="{{i18n.templateEdit.newFieldPlaceholder}}" value="{{newField}}" bindinput="onNewFieldInput" />
+      <button class="btn btn-sm" size="mini" bindtap="onAddField">{{i18n.templateEdit.addField}}</button>
     </view>
     <view class="chips" wx:if="{{fields.length > 0}}">
       <view class="chip" wx:for="{{fields}}" wx:key="*this">
@@ -12,26 +12,26 @@
         <text class="chip-del" data-name="{{item}}" bindtap="onDeleteField">×</text>
       </view>
     </view>
-    <view class="text-muted hint" wx:else>暂无字段，先添加字段后才能在模板中使用</view>
-    <view class="text-muted hint" wx:if="{{fields.length > 0}}">点击字段标签可插入到当前编辑的面，点击 × 删除</view>
+    <view class="text-muted hint" wx:else>{{i18n.templateEdit.noFields}}</view>
+    <view class="text-muted hint" wx:if="{{fields.length > 0}}">{{i18n.templateEdit.fieldsHint}}</view>
   </view>
 
   <!-- 正面模板 -->
   <view class="card section">
-    <text class="form-title">正面模板</text>
-    <textarea class="textarea" placeholder="点击上方字段可插入引用，支持纯文本" value="{{front}}" bindfocus="onFrontFocus" bindinput="onFrontInput" auto-height />
+    <text class="form-title">{{i18n.templateEdit.frontTitle}}</text>
+    <textarea class="textarea" placeholder="{{i18n.templateEdit.tplPlaceholder}}" value="{{front}}" bindfocus="onFrontFocus" bindinput="onFrontInput" auto-height />
   </view>
 
   <!-- 背面模板 -->
   <view class="card section">
-    <text class="form-title">背面模板</text>
-    <textarea class="textarea" placeholder="点击上方字段可插入引用，支持纯文本" value="{{back}}" bindfocus="onBackFocus" bindinput="onBackInput" auto-height />
+    <text class="form-title">{{i18n.templateEdit.backTitle}}</text>
+    <textarea class="textarea" placeholder="{{i18n.templateEdit.tplPlaceholder}}" value="{{back}}" bindfocus="onBackFocus" bindinput="onBackInput" auto-height />
   </view>
 
   <!-- 内容放大 -->
   <view class="card section">
-    <text class="form-title">内容放大倍数</text>
-    <view class="text-muted hint">复习时卡片正反面内容会按此倍数放大，方便识别、不费眼睛</view>
+    <text class="form-title">{{i18n.templateEdit.scaleTitle}}</text>
+    <view class="text-muted hint">{{i18n.templateEdit.scaleHint}}</view>
     <view class="scale-row">
       <view class="scale-opt {{scale === item.value ? 'active' : ''}}" wx:for="{{scaleOptions}}" wx:key="value" data-value="{{item.value}}" bindtap="onScaleChange">{{item.label}}</view>
     </view>
@@ -40,13 +40,13 @@
 
   <!-- 预览 -->
   <view class="card section">
-    <text class="form-title">预览</text>
-    <view class="preview-label text-muted">正面</view>
+    <text class="form-title">{{i18n.templateEdit.previewTitle}}</text>
+    <view class="preview-label text-muted">{{i18n.templateEdit.front}}</view>
     <view class="preview-text" style="font-size: {{30 * scale}}rpx">{{preview.front}}</view>
     <view class="divider"></view>
-    <view class="preview-label text-muted">背面</view>
+    <view class="preview-label text-muted">{{i18n.templateEdit.back}}</view>
     <view class="preview-text" style="font-size: {{30 * scale}}rpx">{{preview.back}}</view>
   </view>
 
-  <button class="btn" bindtap="onSave">保存模板</button>
+  <button class="btn" bindtap="onSave">{{i18n.templateEdit.save}}</button>
 </view>

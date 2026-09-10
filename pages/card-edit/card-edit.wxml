@@ -1,33 +1,33 @@
 <view class="container">
   <view class="add-form card">
-    <text class="form-title">新增卡片</text>
+    <text class="form-title">{{i18n.cardEdit.addTitle}}</text>
 
     <block wx:if="{{tpl}}">
-      <text class="tpl-hint text-muted">使用模板「{{tpl.name}}」，按字段填写</text>
-      <view class="field-row" wx:for="{{tpl.fields}}" wx:key="*this">
-        <text class="field-label">{{item}}</text>
-        <input class="input" placeholder="请输入{{item}}" value="{{fieldValues[item]}}" data-name="{{item}}" bindinput="onFieldInput" />
+      <text class="tpl-hint text-muted">{{tplHintText}}</text>
+      <view class="field-row" wx:for="{{tplFields}}" wx:key="name">
+        <text class="field-label">{{item.name}}</text>
+        <input class="input" placeholder="{{item.placeholder}}" value="{{fieldValues[item.name]}}" data-name="{{item.name}}" bindinput="onFieldInput" />
       </view>
-      <view wx:if="{{tpl.fields.length === 0}}" class="text-muted tpl-hint">该模板还没有字段，请先到模板页添加字段</view>
+      <view wx:if="{{tplFields.length === 0}}" class="text-muted tpl-hint">{{i18n.cardEdit.noFields}}</view>
     </block>
 
     <block wx:else>
-      <input class="input" placeholder="正面（问题）" value="{{front}}" bindinput="onFrontInput" />
-      <input class="input" placeholder="背面（答案）" value="{{back}}" bindinput="onBackInput" />
+      <input class="input" placeholder="{{i18n.cardEdit.frontPlaceholder}}" value="{{front}}" bindinput="onFrontInput" />
+      <input class="input" placeholder="{{i18n.cardEdit.backPlaceholder}}" value="{{back}}" bindinput="onBackInput" />
     </block>
 
-    <button class="btn" bindtap="onAddCard">添加卡片</button>
+    <button class="btn" bindtap="onAddCard">{{i18n.cardEdit.addCard}}</button>
   </view>
 
-  <view class="list-title text-muted">卡片列表（{{cards.length}}）</view>
+  <view class="list-title text-muted">{{listTitle}}</view>
 
   <view class="card-item card" wx:for="{{cards}}" wx:key="id">
     <view class="card-content">
       <text class="card-front">{{item.front}}</text>
       <text class="card-back text-muted">{{item.back}}</text>
     </view>
-    <text class="del" data-id="{{item.id}}" bindtap="onDeleteCard">删除</text>
+    <text class="del" data-id="{{item.id}}" bindtap="onDeleteCard">{{i18n.cardEdit.delete}}</text>
   </view>
 
-  <view class="empty text-muted" wx:if="{{cards.length === 0}}">暂无卡片</view>
+  <view class="empty text-muted" wx:if="{{cards.length === 0}}">{{i18n.cardEdit.empty}}</view>
 </view>

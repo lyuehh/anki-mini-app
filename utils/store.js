@@ -1,5 +1,6 @@
 // utils/store.js - 基于本地存储的数据层
 const template = require('./template.js')
+const i18n = require('./i18n.js')
 
 const KEY = 'anki_decks'
 const TPL_KEY = 'anki_templates'
@@ -34,19 +35,19 @@ function genId() {
 
 // 首次启动写入示例数据
 function init() {
+  // 示例数据按当前语言生成（默认中文），只在首次启动写入
+  const seed = i18n.dict().seed
   const decks = _load()
   if (decks.length === 0) {
     const now = Date.now()
     _save([
       {
         id: genId(),
-        name: '示例牌组：常用英语单词',
+        name: seed.deckName,
         createdAt: now,
-        cards: [
-          { id: genId(), front: 'apple', back: '苹果', srs: { ease: 2.5, interval: 0, reps: 0, due: now } },
-          { id: genId(), front: 'book', back: '书', srs: { ease: 2.5, interval: 0, reps: 0, due: now } },
-          { id: genId(), front: 'cat', back: '猫', srs: { ease: 2.5, interval: 0, reps: 0, due: now } }
-        ]
+        cards: seed.cards.map(c => ({
+          id: genId(), front: c.front, back: c.back, srs: { ease: 2.5, interval: 0, reps: 0, due: now }
+        }))
       }
     ])
   }
@@ -56,11 +57,11 @@ function init() {
     _saveTemplates([
       {
         id: genId(),
-        name: '示例模板：单词卡',
+        name: seed.tplName,
         createdAt: now,
-        fields: ['单词', '释义', '例句'],
-        front: '{{单词}}',
-        back: '{{释义}}\n\n例句：{{例句}}',
+        fields: [seed.fieldWord, seed.fieldMeaning, seed.fieldExample],
+        front: `{{${seed.fieldWord}}}`,
+        back: seed.backTemplate,
         scale: 1
       }
     ])
