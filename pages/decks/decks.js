@@ -314,16 +314,34 @@ Page({
       wx.showModal({ title: i18n.t('decks.exportFailTitle'), content: i18n.t('decks.exportFailContent'), showCancel: false })
       return
     }
-    this.shareFile(filePath)
+    this.shareFile(filePath, fileName)
   },
 
-  // 把生成的文件交给用户：优先系统分享（Android/iOS），微信端用 shareFileMessage
-  shareFile(filePath) {
-    // 多端衍生 App：系统分享面板
-    if (wx.miniapp && typeof wx.miniapp.shareFileMessage === 'function') {
-      wx.miniapp.shareFileMessage({
+  // 把生成的文件交给用户：优先系统分享（Android/iOS），微信端用 shareFileMessage。
+  // 无论走哪条路径，成功要给正反馈、失败要明确提示，避免出现「点了导出什么都没发生」。
+  shareFile(filePath, fileName) {
+    // 多端衍生 App（Android / iOS）：拉起系统分享面板，用户可选择保存到文件、发到微信等。
+    // 注意：多端框架提供的接口是 wx.miniapp.shareFile（不是 shareFileMessage），
+    // 用错名字会导致此分支恒为 false，在 Android 上表现为点击后毫无反应。
+    // 参考：https://developers.weixin.qq.com/miniprogram/dev/platform-capabilities/miniapp/api/miniapp/shareFile.html
+    if (wx.miniapp && typeof wx.miniapp.shareFile === 'function') {
+      wx.miniapp.shareFile({
         filePath,
-        fail: () => {}
+        success: () => {
+          // 系统分享面板已弹出，操作交由用户；给一个轻提示确认导出已就绪
+          wx.showToast({ title: i18n.t('decks.exportReadyToast'), icon: 'none' })
+        },
+        fail: (err) => {
+          // 用户主动取消不打扰
+          const msg = (err && (err.errMsg || err.errmsg)) || ''
+          if (/cancel/i.test(msg)) return
+          // 分享失败也要让用户知道文件已生成及其位置，而不是静默无反应
+          wx.showModal({
+            title: i18n.t('decks.shareFailTitle'),
+            content: i18n.t('decks.exportSavedPath', { name: fileName }),
+            showCancel: false
+          })
+        }
       })
       return
     }
@@ -331,10 +349,11 @@ Page({
     if (typeof wx.shareFileMessage === 'function') {
       wx.shareFileMessage({
         filePath,
+        success: () => wx.showToast({ title: i18n.t('decks.exportReadyToast'), icon: 'none' }),
         fail: (err) => {
           // 用户取消不提示；其他失败给出保存提示
           if (err && /cancel/i.test(err.errMsg || '')) return
-          wx.showModal({ title: i18n.t('decks.exportSavedTitle'), content: i18n.t('decks.exportSavedContent'), showCancel: false })
+          wx.showModal({ title: i18n.t('decks.exportSavedTitle'), content: i18n.t('decks.exportSavedPath', { name: fileName }), showCancel: false })
         }
       })
       return
@@ -344,11 +363,19 @@ Page({
       wx.saveFileToDisk({
         filePath,
         success: () => wx.showToast({ title: i18n.t('decks.exportSavedTitle'), icon: 'none' }),
-        fail: () => wx.showModal({ title: i18n.t('decks.exportSavedTitle'), content: i18n.t('decks.exportSavedContent'), showCancel: false })
+        fail: (err) => {
+          if (err && /cancel/i.test(err.errMsg || '')) return
+          wx.showModal({ title: i18n.t('decks.exportSavedTitle'), content: i18n.t('decks.exportSavedPath', { name: fileName }), showCancel: false })
+        }
       })
       return
     }
-    wx.showModal({ title: i18n.t('decks.exportSavedTitle'), content: i18n.t('decks.exportSavedContent'), showCancel: false })
+    // 兜底：当前环境没有任何分享/保存能力，明确告知文件已生成及其位置
+    wx.showModal({
+      title: i18n.t('decks.exportSavedTitle'),
+      content: i18n.t('decks.exportSavedPath', { name: fileName }),
+      showCancel: false
+    })
   },
 
   // 生成 YYYYMMDDHHmm 便于文件名排序
